@@ -4,3 +4,4 @@ node_modules/
 dist/
 .tmp/
 .babel_cache
+npm-debug.log
