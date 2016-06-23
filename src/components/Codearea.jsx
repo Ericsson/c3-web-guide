@@ -215,7 +215,8 @@ class RunCodeButton extends React.Component {
          borderLeft: '1px solid #d9d9d9',
          outline: 'none',
          userSelect: 'none',
-         color: '#222'
+         color: '#222',
+         cursor: 'pointer'
       };
 
       return (
