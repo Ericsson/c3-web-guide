@@ -9,7 +9,7 @@ class Markdown extends React.Component {
 
     render() {
         return (
-            <div className='markdown-body' dangerouslySetInnerHTML={this.rawMarkup()}/>
+            <div style={this.props.style} className='markdown-body' dangerouslySetInnerHTML={this.rawMarkup()}/>
         );
     }
 }
