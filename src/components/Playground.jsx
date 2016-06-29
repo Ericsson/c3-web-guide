@@ -135,10 +135,19 @@ class Chat extends React.Component {
         const newLeft = e.clientX - overlayRect.left - this.state.videoMoveStartPosition.x;
         const newTop = e.clientY - overlayRect.top - this.state.videoMoveStartPosition.y;
 
-        if(newLeft >= 0 && newLeft <= overlayRect.width - videoRect.width) {
+        if(newLeft <= 0) {
+            this.videoNode.style.left = '0px';
+        } else if (newLeft >= overlayRect.width - videoRect.width) {
+            this.videoNode.style.left = `${overlayRect.width - videoRect.width}px`
+        } else {
             this.videoNode.style.left = `${newLeft}px`;
         }
-        if(newTop >= 0 && newTop <= overlayRect.height - videoRect.height) {
+
+        if(newTop <= 0) {
+            this.videoNode.style.top = '0px';
+        } else if (newTop >= overlayRect.height - videoRect.height) {
+            this.videoNode.style.top = `${overlayRect.height - videoRect.height}px`
+        } else {
             this.videoNode.style.top = `${newTop}px`;
         }
     }
@@ -208,7 +217,7 @@ class VideoWindow extends React.Component {
             maxWidth: '50%',
             cursor: 'move',
             display: this.state.videoPlaying ? 'inline-block' : 'none',
-            boxShadow: '0px 0px 10px rgba(50, 50, 50, 0.5)',
+            boxShadow: '0px 0px 15px rgba(50, 50, 50, 0.4)',
             border: '1px solid rgba(50, 50, 50, 0.5)',
             borderRadius: '3px'
         };
