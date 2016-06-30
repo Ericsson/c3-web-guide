@@ -4,15 +4,6 @@ import Codearea from './Codearea.jsx';
 import SimpleButton from './SimpleButton.jsx';
 import * as cct from '@cct/libcct';
 
-window.videoNode1 = undefined;
-window.videoNdoe2 = undefined;
-window.client1Messages = [];
-window.client2Messages = [];
-window.client1SendMessage = () => {};
-window.client2SendMessage = () => {};
-window.client1StartCall = () => {};
-window.client2StartCall = () => {};
-
 function pushObserver(arr, callback) {
     arr.push = function(e) {
         Array.prototype.push.call(arr, e);
@@ -25,18 +16,31 @@ class Playground extends React.Component {
         super();
 
         this.state = {
-            client1Messages: window.client1Messages,
-            client2Messages: window.client2Messages
+            allClientsAuthenticated: false,
+            authenticatedClients: {}
         }
 
+        this.handleClientAuthenticated = this.handleClientAuthenticated.bind(this);
         this.runCode = this.runCode.bind(this);
-        pushObserver(window.client1Messages, arr => {
-            this.setState({client1Messages: arr});
-        });
+    }
 
-        pushObserver(window.client2Messages, arr => {
-            this.setState({client2Messages: arr});
-        });
+    componentWillMount() {
+        const authenticatedClients = {};
+        authenticatedClients[this.props.client1Id] = false;
+        authenticatedClients[this.props.client2Id] = false;
+        this.setState({authenticatedClients});
+    }
+
+    handleClientAuthenticated(clientId) {
+        const authenticatedClients = this.state.authenticatedClients;
+        authenticatedClients[clientId] = true;
+        this.setState({authenticatedClients});
+
+        let allClientsAuthenticated = true;
+        for(const client in authenticatedClients) {
+            allClientsAuthenticated = authenticatedClients[client];
+        }
+        this.setState({allClientsAuthenticated});
     }
 
     runCode(code) {
@@ -44,18 +48,11 @@ class Playground extends React.Component {
         this.forceUpdate();
     }
 
-    videoNode1Created(node) {
-        window.videoNode1 = node;
-    }
-
-    videoNode2Created(node) {
-        window.videoNode2 = node;
-    }
-
     render() {
         const wrapperStyle = {
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            position: 'relative'
         };
         Object.assign(wrapperStyle, this.props.style);
 
@@ -76,20 +73,46 @@ class Playground extends React.Component {
                 <div>
                     <Chat
                         style={chatStyle}
-                        userId='user1'
-                        messages={this.state.client1Messages}
-                        onSendMessage={window.client1SendMessage}
-                        onStartCall={window.client1StartCall}
-                        onVideoNodeCreated={this.videoNode1Created}/>
+                        serverUrl={this.props.serverUrl}
+                        clientId={this.props.client1Id}
+                        onClientAuthenticated={this.handleClientAuthenticated}/>
                     <Chat
                         style={chatStyle}
-                        userId='user2'
-                        messages={this.state.client2Messages}
-                        onStartCall={window.client2StartCall}
-                        onSendMessage={window.client2SendMessage}
-                        onVideoNodeCreated={this.videoNode2Created}/>
+                        serverUrl={this.props.serverUrl}
+                        clientId={this.props.client2Id}
+                        onClientAuthenticated={this.handleClientAuthenticated}/>
                 </div>
+                <LoadingOverlay loading={!this.state.allClientsAuthenticated}/>
             </div>
+        );
+    }
+}
+
+Playground.defaultProps = {
+    client1Id: 'client1',
+    client2Id: 'client2'
+}
+
+class LoadingOverlay extends React.Component {
+    render() {
+        const style = {
+            position: 'absolute',
+            top: '0px',
+            zIndex: '4',
+            width: '100%',
+            height: '100%',
+            display: this.props.loading ? 'flex' : 'none',
+            background: 'rgba(250, 250, 250, 0.8)',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+            fontWeight: 'bold',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '32px',
+            color: '#333'
+        }
+
+        return (
+            <div style={style}>LOADING...</div>
         );
     }
 }
@@ -103,7 +126,9 @@ class Chat extends React.Component {
             videoMoveStartPosition: {
                 x: undefined,
                 y: undefined
-            }
+            },
+            userId: undefined,
+            messages: []
         };
 
         this.startMoveVideoWindow = this.startMoveVideoWindow.bind(this);
@@ -111,8 +136,25 @@ class Chat extends React.Component {
     }
 
     componentDidMount() {
+        const clientId = this.props.clientId;
         this.videoNode = ReactDOM.findDOMNode(this.videoWindow);
-        this.props.onVideoNodeCreated(this.videoNode);
+
+        window[clientId + 'Messages'] = [];
+        window[clientId + 'SendMessage'] = () => {};
+        window[clientId + 'StartCall'] = () => {};
+        window[clientId + 'VideoNode'] = this.videoNode;
+        window[clientId] = new cct.Client();
+
+        pushObserver(window[clientId + 'Messages'], arr => {
+            this.setState({messages: arr});
+        });
+
+        cct.Auth.anonymous({serverUrl: this.props.serverUrl})
+            .then(window[clientId].auth)
+            .then(client => {
+                this.props.onClientAuthenticated(clientId);
+                this.setState({userId: client.user.id});
+            });
     }
 
     startMoveVideoWindow(e) {
@@ -172,12 +214,14 @@ class Chat extends React.Component {
         return (
             <div style={wrapperStyle}>
                 <div style={chatStyle}>
+                    <ChatHeader
+                        clientId={this.props.clientId}/>
                     <ChatMessageList
-                        userId={this.props.userId}
-                        messages={this.props.messages}/>
+                        userId={this.state.userId}
+                        messages={this.state.messages}/>
                     <ChatInput
-                        onSendMessage={this.props.onSendMessage}
-                        onStartCall={this.props.onStartCall}/>
+                        onSendMessage={window[this.props.clientId + 'SendMessage']}
+                        onStartCall={window[this.props.clientId + 'StartCall']}/>
                 </div>
                 <VideoWindow
                     ref={c => this.videoWindow = c}
@@ -190,63 +234,20 @@ class Chat extends React.Component {
     }
 }
 
-Chat.propTypes = {
-    userId: React.PropTypes.string.isRequired,
-    messages: React.PropTypes.array.isRequired
-}
-
-class VideoWindow extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            videoPlaying: false
-        };
-    }
-    componentDidMount() {
-        this.videoNode.addEventListener('playing', e => {
-            this.setState({videoPlaying: true});
-        })
-    }
-
+class ChatHeader extends React.Component {
     render() {
         const style = {
-            position: 'absolute',
-            top: '0px',
-            left: '0px',
-            width: '125px',
-            maxWidth: '50%',
-            cursor: 'move',
-            display: this.state.videoPlaying ? 'inline-block' : 'none',
-            boxShadow: '0px 0px 15px rgba(50, 50, 50, 0.4)',
-            border: '1px solid rgba(50, 50, 50, 0.5)',
-            borderRadius: '3px'
-        };
+            textAlign: 'center',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+            borderBottom: '1px solid #e1e1e1',
+            padding: '5px',
+            fontWeight: 'bold'
+        }
 
         return (
-            <video
-                style={style}
-                autoPlay
-                onMouseDown={this.props.onStartMoveVideoWindow}
-                ref={c => this.videoNode = c}>
-            </video>
+            <div style={style}>{this.props.clientId}</div>
         );
     }
-}
-
-class MoveVideoOverlay extends React.Component {
-   render() {
-      const style = {
-            position: 'absolute',
-            top: '0px',
-            width: '100%',
-            height: '100%',
-            display: this.props.movingVideo ? 'block' : 'none',
-      };
-
-      return (
-         <div style={style} onMouseMove={this.props.onMoveVideo}></div>
-      );
-   }
 }
 
 class ChatMessageList extends React.Component {
@@ -352,6 +353,60 @@ class ChatInput extends React.Component {
             </div>
         );
     }
+}
+
+class VideoWindow extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            videoPlaying: false
+        };
+    }
+    componentDidMount() {
+        this.videoNode.addEventListener('playing', () => {
+            this.setState({videoPlaying: true});
+        })
+    }
+
+    render() {
+        const style = {
+            position: 'absolute',
+            top: '0px',
+            left: '0px',
+            width: '125px',
+            maxWidth: '50%',
+            cursor: 'move',
+            display: this.state.videoPlaying ? 'inline-block' : 'none',
+            boxShadow: '0px 0px 15px rgba(50, 50, 50, 0.4)',
+            border: '1px solid rgba(50, 50, 50, 0.5)',
+            borderRadius: '3px'
+        };
+
+        return (
+            <video
+                style={style}
+                autoPlay
+                onMouseDown={this.props.onStartMoveVideoWindow}
+                ref={c => this.videoNode = c}>
+            </video>
+        );
+    }
+}
+
+class MoveVideoOverlay extends React.Component {
+   render() {
+      const style = {
+            position: 'absolute',
+            top: '0px',
+            width: '100%',
+            height: '100%',
+            display: this.props.movingVideo ? 'block' : 'none',
+      };
+
+      return (
+         <div style={style} onMouseMove={this.props.onMoveVideo}></div>
+      );
+   }
 }
 
 export default Playground;

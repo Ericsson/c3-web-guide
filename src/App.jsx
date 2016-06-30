@@ -20,7 +20,9 @@ class App extends React.Component {
 
         return (
             <div>
-                <Playground style={playgroundStyle}/>
+                <Playground
+                    style={playgroundStyle}
+                    serverUrl='https://webrtc-test.cct.ericsson.net'/>
                 <Markdown style={markdownStyle} src='guide.md'/>
             </div>
         );
