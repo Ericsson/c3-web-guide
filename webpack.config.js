@@ -24,7 +24,7 @@ var config = {
             },
             {
                 test: /\.md$/,
-                loader: "html!markdown"
+                loader: "html!highlight!markdown"
             }
         ]
     }

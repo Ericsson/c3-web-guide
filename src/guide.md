@@ -2,7 +2,7 @@
 
 Copy and paste the code below into the editor and you will have built your first C3 web app.
 
-```js
+```
 var serverUrl = 'https://webrtc-test.cct.ericsson.net';
 var client1 = new cct.Client();
 var client2 = new cct.Client();
