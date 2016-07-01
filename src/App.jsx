@@ -1,6 +1,7 @@
 import React from 'react';
 import Playground from './components/Playground.jsx';
 import Markdown from './components/Markdown.jsx';
+import Constants from './constants.js';
 import './base.css';
 
 class App extends React.Component {
@@ -22,7 +23,7 @@ class App extends React.Component {
             <div>
                 <Playground
                     style={playgroundStyle}
-                    serverUrl='https://webrtc-test.cct.ericsson.net'/>
+                    serverUrl={Constants.serverUrl}/>
                 <Markdown style={markdownStyle} src='guide.md'/>
             </div>
         );
