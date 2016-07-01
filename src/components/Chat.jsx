@@ -217,6 +217,8 @@ class ChatInput extends React.Component {
             padding: '5px',
             margin: '0px',
             border: 'none',
+            width: '100%',
+            minWidth: '0px',
             borderLeft: '1px solid #e1e1e1',
             borderRight: '1px solid #e1e1e1'
         };
