@@ -1,6 +1,7 @@
 import React from 'react';
 import Playground from './components/Playground.jsx';
 import Markdown from './components/Markdown.jsx';
+import Constants from './constants.js';
 import './base.css';
 
 class App extends React.Component {
@@ -20,7 +21,9 @@ class App extends React.Component {
 
         return (
             <div>
-                <Playground style={playgroundStyle}/>
+                <Playground
+                    style={playgroundStyle}
+                    serverUrl={Constants.serverUrl}/>
                 <Markdown style={markdownStyle} src='guide.md'/>
             </div>
         );
