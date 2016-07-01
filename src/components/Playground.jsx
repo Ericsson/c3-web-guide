@@ -54,12 +54,12 @@ class Playground extends React.Component {
         };
 
         const chatWrapperStyle = {
-            height: '250px'
+            display: 'flex'
         };
 
         const chatStyle = {
-            height: 'inherit',
-            width: '50%'
+            flex: '1',
+            height: '250px'
         };
 
         return (
