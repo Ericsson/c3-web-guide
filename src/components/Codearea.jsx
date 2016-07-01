@@ -52,7 +52,8 @@ class Codearea extends React.Component {
 
       let wrapperStyle = {
          display: 'flex',
-         flexDirection: 'column'
+         flexDirection: 'column',
+         overflow: 'auto'
       };
       Object.assign(wrapperStyle, this.props.style);
 
