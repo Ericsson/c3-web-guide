@@ -88,36 +88,25 @@ class Chat extends React.Component {
     }
 
     render() {
-        let wrapperStyle = {
-            display: 'inline-block',
-            position: 'relative',
-            width: '100%',
-            height: '200px'
-        };
-        Object.assign(wrapperStyle, this.props.style);
-
-        const chatStyle = {
+        let chatStyle = {
             border: '1px solid #e1e1e1',
-            display: 'flex',
-            height: 'inherit',
+            display: 'inline-flex',
+            position: 'relative',
             flexDirection: 'column',
             boxSizing: 'border-box'
         };
+        Object.assign(chatStyle, this.props.style);
 
         return (
-            <div style={wrapperStyle}>
-                <div
-                    ref={c => this.videoArea = c}
-                    style={chatStyle}>
-                    <ChatHeader
-                        clientId={this.props.clientId}/>
-                    <ChatMessageList
-                        userId={this.state.userId}
-                        messages={this.state.messages}/>
-                    <ChatInput
-                        onSendMessage={window[this.props.clientId + 'SendMessage']}
-                        onStartCall={window[this.props.clientId + 'StartCall']}/>
-                </div>
+            <div ref={c => this.videoArea = c} style={chatStyle}>
+                <ChatHeader
+                    clientId={this.props.clientId}/>
+                <ChatMessageList
+                    userId={this.state.userId}
+                    messages={this.state.messages}/>
+                <ChatInput
+                    onSendMessage={window[this.props.clientId + 'SendMessage']}
+                    onStartCall={window[this.props.clientId + 'StartCall']}/>
                 <VideoWindow
                     ref={c => this.videoWindow = c}
                     onStartMoveVideoWindow={this.startMoveVideoWindow}/>

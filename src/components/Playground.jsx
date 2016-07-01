@@ -53,12 +53,8 @@ class Playground extends React.Component {
             flex: '1'
         };
 
-        const chatWrapperStyle = {
-            display: 'flex'
-        };
-
         const chatStyle = {
-            flex: '1',
+            width: '50%',
             height: '250px'
         };
 
@@ -67,7 +63,7 @@ class Playground extends React.Component {
                 <Codearea
                     style={codeareaStyle}
                     onRunCode={this.runCode}/>
-                <div style={chatWrapperStyle}>
+                <div>
                     <Chat
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
