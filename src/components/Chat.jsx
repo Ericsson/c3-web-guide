@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SimpleButton from './SimpleButton.jsx';
+import {defaultBorder} from '../constants.js';
 import * as cct from '@cct/libcct';
 
 function pushObserver(arr, callback) {
@@ -89,7 +90,7 @@ class Chat extends React.Component {
 
     render() {
         let chatStyle = {
-            border: '1px solid #e1e1e1',
+            border: defaultBorder,
             display: 'inline-flex',
             position: 'relative',
             flexDirection: 'column',
@@ -120,7 +121,7 @@ class ChatHeader extends React.Component {
         const style = {
             textAlign: 'center',
             fontFamily: 'Helvetica, Arial, sans-serif',
-            borderBottom: '1px solid #e1e1e1',
+            borderBottom: defaultBorder,
             padding: 5,
             fontWeight: 'bold'
         }
@@ -202,7 +203,7 @@ class ChatInput extends React.Component {
 
     render() {
         const wrapperStyle = {
-            borderTop: '1px solid #e1e1e1',
+            borderTop: defaultBorder,
             display: 'flex'
         }
 
@@ -219,8 +220,8 @@ class ChatInput extends React.Component {
             border: 'none',
             width: '100%',
             minWidth: 0,
-            borderLeft: '1px solid #e1e1e1',
-            borderRight: '1px solid #e1e1e1'
+            borderLeft: defaultBorder,
+            borderRight: defaultBorder
         };
 
         return (
