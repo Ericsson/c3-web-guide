@@ -15,11 +15,6 @@ class Chat extends React.Component {
         super();
 
         this.state = {
-            movingVideo: false,
-            videoMoveStartPosition: {
-                x: undefined,
-                y: undefined
-            },
             userId: undefined,
             messages: []
         };
@@ -50,78 +45,71 @@ class Chat extends React.Component {
             });
     }
 
-    startMoveVideoWindow(e) {
-        this.setState({movingVideo: true});
-        this.setState({videoMoveStartPosition: {
-            x: e.clientX - e.target.getBoundingClientRect().left,
-            y: e.clientY - e.target.getBoundingClientRect().top
-        }})
-        const handleMouseUp = function() {
-        window.removeEventListener('mouseup', handleMouseUp);
-            this.setState({movingVideo: false});
-        }.bind(this);
-        window.addEventListener('mouseup', handleMouseUp);
-    }
-
-    moveVideoWindow(e) {
-        const overlayRect = e.target.getBoundingClientRect();
-        const videoRect = this.videoNode.getBoundingClientRect();
-
-        const newLeft = e.clientX - overlayRect.left - this.state.videoMoveStartPosition.x;
-        const newTop = e.clientY - overlayRect.top - this.state.videoMoveStartPosition.y;
+    moveVideoWindow(e, videoRect, videoArea, startPos) {
+        const newLeft = e.clientX - videoArea.left - startPos.x;
+        const newTop = e.clientY - videoArea.top - startPos.y;
 
         if(newLeft <= 0) {
             this.videoNode.style.left = '0px';
-        } else if (newLeft >= overlayRect.width - videoRect.width) {
-            this.videoNode.style.left = `${overlayRect.width - videoRect.width}px`
+        } else if (newLeft >= videoArea.width - videoRect.width) {
+            this.videoNode.style.left = `${videoArea.width - videoRect.width}px`
         } else {
             this.videoNode.style.left = `${newLeft}px`;
         }
 
         if(newTop <= 0) {
             this.videoNode.style.top = '0px';
-        } else if (newTop >= overlayRect.height - videoRect.height) {
-            this.videoNode.style.top = `${overlayRect.height - videoRect.height}px`
+        } else if (newTop >= videoArea.height - videoRect.height) {
+            this.videoNode.style.top = `${videoArea.height - videoRect.height}px`
         } else {
             this.videoNode.style.top = `${newTop}px`;
         }
     }
 
-    render() {
-        let wrapperStyle = {
-            display: 'inline-block',
-            position: 'relative',
-            width: '100%',
-            height: '200px'
+    startMoveVideoWindow(e) {
+        const videoArea = ReactDOM.findDOMNode(this.videoArea).getBoundingClientRect();
+        const videoRect = this.videoNode.getBoundingClientRect();
+        const startPos = {
+            x: e.clientX - e.target.getBoundingClientRect().left,
+            y: e.clientY - e.target.getBoundingClientRect().top
         };
-        Object.assign(wrapperStyle, this.props.style);
 
-        const chatStyle = {
+        const handleMouseMove = function(e) {
+            this.moveVideoWindow(e, videoRect, videoArea, startPos);
+        }.bind(this);
+
+        const handleMouseUp = function() {
+            window.removeEventListener('mouseup', handleMouseUp);
+            window.removeEventListener('mousemove', handleMouseMove);
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    render() {
+        let chatStyle = {
             border: '1px solid #e1e1e1',
-            display: 'flex',
-            height: 'inherit',
+            display: 'inline-flex',
+            position: 'relative',
             flexDirection: 'column',
             boxSizing: 'border-box'
         };
+        Object.assign(chatStyle, this.props.style);
 
         return (
-            <div style={wrapperStyle}>
-                <div style={chatStyle}>
-                    <ChatHeader
-                        clientId={this.props.clientId}/>
-                    <ChatMessageList
-                        userId={this.state.userId}
-                        messages={this.state.messages}/>
-                    <ChatInput
-                        onSendMessage={window[this.props.clientId + 'SendMessage']}
-                        onStartCall={window[this.props.clientId + 'StartCall']}/>
-                </div>
+            <div ref={c => this.videoArea = c} style={chatStyle}>
+                <ChatHeader
+                    clientId={this.props.clientId}/>
+                <ChatMessageList
+                    userId={this.state.userId}
+                    messages={this.state.messages}/>
+                <ChatInput
+                    onSendMessage={window[this.props.clientId + 'SendMessage']}
+                    onStartCall={window[this.props.clientId + 'StartCall']}/>
                 <VideoWindow
                     ref={c => this.videoWindow = c}
                     onStartMoveVideoWindow={this.startMoveVideoWindow}/>
-                <MoveVideoOverlay
-                    movingVideo={this.state.movingVideo}
-                    onMoveVideo={this.moveVideoWindow}/>
             </div>
         );
     }
@@ -227,7 +215,10 @@ class ChatInput extends React.Component {
             flex: '1',
             outline: 'none',
             padding: '5px',
+            margin: '0px',
             border: 'none',
+            width: '100%',
+            minWidth: '0px',
             borderLeft: '1px solid #e1e1e1',
             borderRight: '1px solid #e1e1e1'
         };
@@ -284,22 +275,6 @@ class VideoWindow extends React.Component {
             </video>
         );
     }
-}
-
-class MoveVideoOverlay extends React.Component {
-   render() {
-      const style = {
-            position: 'absolute',
-            top: '0px',
-            width: '100%',
-            height: '100%',
-            display: this.props.movingVideo ? 'block' : 'none',
-      };
-
-      return (
-         <div style={style} onMouseMove={this.props.onMoveVideo}></div>
-      );
-   }
 }
 
 export default Chat;

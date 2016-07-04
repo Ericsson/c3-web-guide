@@ -54,8 +54,8 @@ class Playground extends React.Component {
         };
 
         const chatStyle = {
-            height: '250px',
-            width: '50%'
+            width: '50%',
+            height: '250px'
         };
 
         return (
