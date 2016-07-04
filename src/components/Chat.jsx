@@ -53,7 +53,7 @@ class Chat extends React.Component {
         if(newLeft <= 0) {
             this.videoNode.style.left = '0px';
         } else if (newLeft >= videoArea.width - videoRect.width) {
-            this.videoNode.style.left = `${videoArea.width - videoRect.width}px`
+            this.videoNode.style.left = `${videoArea.width - videoRect.width - 1}px`
         } else {
             this.videoNode.style.left = `${newLeft}px`;
         }
@@ -61,7 +61,7 @@ class Chat extends React.Component {
         if(newTop <= 0) {
             this.videoNode.style.top = '0px';
         } else if (newTop >= videoArea.height - videoRect.height) {
-            this.videoNode.style.top = `${videoArea.height - videoRect.height}px`
+            this.videoNode.style.top = `${videoArea.height - videoRect.height - 1}px`
         } else {
             this.videoNode.style.top = `${newTop}px`;
         }
