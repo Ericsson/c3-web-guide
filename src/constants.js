@@ -1,5 +1,1 @@
-const constants = {
-    serverUrl: 'https://webrtc-test.cct.ericsson.net'
-};
-
-export default constants;
+export const serverUrl = 'https://webrtc-test.cct.ericsson.net';
