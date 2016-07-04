@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SimpleButton from './SimpleButton.jsx';
+import {defaultBorder, defaultTextColor} from '../constants.js';
 import * as cct from '@cct/libcct';
 
 function pushObserver(arr, callback) {
@@ -52,7 +53,7 @@ class Chat extends React.Component {
         if(newLeft <= 0) {
             this.videoNode.style.left = '0px';
         } else if (newLeft >= videoArea.width - videoRect.width) {
-            this.videoNode.style.left = `${videoArea.width - videoRect.width}px`
+            this.videoNode.style.left = `${videoArea.width - videoRect.width - 1}px`
         } else {
             this.videoNode.style.left = `${newLeft}px`;
         }
@@ -60,7 +61,7 @@ class Chat extends React.Component {
         if(newTop <= 0) {
             this.videoNode.style.top = '0px';
         } else if (newTop >= videoArea.height - videoRect.height) {
-            this.videoNode.style.top = `${videoArea.height - videoRect.height}px`
+            this.videoNode.style.top = `${videoArea.height - videoRect.height - 1}px`
         } else {
             this.videoNode.style.top = `${newTop}px`;
         }
@@ -89,7 +90,7 @@ class Chat extends React.Component {
 
     render() {
         let chatStyle = {
-            border: '1px solid #e1e1e1',
+            border: defaultBorder,
             display: 'inline-flex',
             position: 'relative',
             flexDirection: 'column',
@@ -120,9 +121,10 @@ class ChatHeader extends React.Component {
         const style = {
             textAlign: 'center',
             fontFamily: 'Helvetica, Arial, sans-serif',
-            borderBottom: '1px solid #e1e1e1',
-            padding: '5px',
-            fontWeight: 'bold'
+            borderBottom: defaultBorder,
+            padding: 5,
+            fontWeight: 'bold',
+            color: defaultTextColor
         }
 
         return (
@@ -148,7 +150,7 @@ class ChatMessageList extends React.Component {
         const style = {
             flex: '1',
             overflow: 'auto',
-            padding: '5px'
+            padding: 5
         };
 
         return (
@@ -170,9 +172,9 @@ class ChatMessage extends React.Component {
             padding: '6px 8px',
             float: this.props.authorId === this.props.userId ? 'right' : 'left',
             clear: 'both',
-            borderRadius: '12px',
-            fontSize: '12px',
-            margin: '4px',
+            borderRadius: 12,
+            fontSize: 12,
+            margin: 4,
             maxWidth: '80%'
         };
 
@@ -202,7 +204,7 @@ class ChatInput extends React.Component {
 
     render() {
         const wrapperStyle = {
-            borderTop: '1px solid #e1e1e1',
+            borderTop: defaultBorder,
             display: 'flex'
         }
 
@@ -214,13 +216,13 @@ class ChatInput extends React.Component {
         const inputStyle = {
             flex: '1',
             outline: 'none',
-            padding: '5px',
-            margin: '0px',
+            padding: 5,
+            margin: 0,
             border: 'none',
             width: '100%',
-            minWidth: '0px',
-            borderLeft: '1px solid #e1e1e1',
-            borderRight: '1px solid #e1e1e1'
+            minWidth: 0,
+            borderLeft: defaultBorder,
+            borderRight: defaultBorder
         };
 
         return (
@@ -255,15 +257,15 @@ class VideoWindow extends React.Component {
     render() {
         const style = {
             position: 'absolute',
-            top: '0px',
-            left: '0px',
-            width: '125px',
+            top: 0,
+            left: 0,
+            width: 125,
             maxWidth: '50%',
             cursor: 'move',
             display: this.state.videoPlaying ? 'inline-block' : 'none',
             boxShadow: '0px 0px 15px rgba(50, 50, 50, 0.4)',
             border: '1px solid rgba(50, 50, 50, 0.5)',
-            borderRadius: '3px'
+            borderRadius: 3
         };
 
         return (
