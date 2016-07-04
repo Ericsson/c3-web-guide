@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SimpleButton from './SimpleButton.jsx';
-import {defaultBorder} from '../constants.js';
+import {defaultBorder, defaultTextColor} from '../constants.js';
 import * as cct from '@cct/libcct';
 
 function pushObserver(arr, callback) {
@@ -123,7 +123,8 @@ class ChatHeader extends React.Component {
             fontFamily: 'Helvetica, Arial, sans-serif',
             borderBottom: defaultBorder,
             padding: 5,
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            color: defaultTextColor
         }
 
         return (

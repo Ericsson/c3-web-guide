@@ -1,4 +1,5 @@
 import React from 'react';
+import {defaultTextColor} from '../constants.js';
 
 class SimpleButton extends React.Component {
     constructor() {
@@ -27,7 +28,7 @@ class SimpleButton extends React.Component {
             border: 'none',
             outline: 'none',
             userSelect: 'none',
-            color: '#222',
+            color: defaultTextColor,
             cursor: 'pointer'
         };
         Object.assign(style, this.props.style);

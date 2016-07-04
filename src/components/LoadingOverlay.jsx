@@ -1,4 +1,5 @@
 import React from 'react';
+import {defaultTextColor} from '../constants.js';
 
 class LoadingOverlay extends React.Component {
     render() {
@@ -15,7 +16,7 @@ class LoadingOverlay extends React.Component {
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: 32,
-            color: '#333'
+            color: defaultTextColor
         }
 
         return (
