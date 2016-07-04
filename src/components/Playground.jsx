@@ -4,6 +4,18 @@ import Chat from './Chat.jsx';
 import LoadingOverlay from './LoadingOverlay.jsx';
 import * as cct from '@cct/libcct';
 
+const injections = {
+    setName: 'var stateObj = {}; stateObj[caller + "Name"] = response; self.setState(stateObj);'
+};
+
+function injectCode(code) {
+    for(const functionName in injections) {
+        const pattern = new RegExp(`\(\\b\\w+\)\\.${functionName}\\(.*?\\)`, 'g');
+        code = code.replace(pattern, `$&.then(function(response) {var caller = '$1'; ${injections[functionName]} return response;})`);
+    }
+    return code;
+}
+
 class Playground extends React.Component {
     constructor() {
         super();
@@ -11,7 +23,7 @@ class Playground extends React.Component {
         this.state = {
             allClientsAuthenticated: false,
             authenticatedClients: {}
-        }
+        };
 
         this.handleClientAuthenticated = this.handleClientAuthenticated.bind(this);
         this.runCode = this.runCode.bind(this);
@@ -37,6 +49,8 @@ class Playground extends React.Component {
     }
 
     runCode(code) {
+        const self = this;
+        code = injectCode(code);
         eval(code);
         this.forceUpdate();
     }
@@ -68,11 +82,13 @@ class Playground extends React.Component {
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client1Id}
+                        clientName={this.state[this.props.client1Id + 'Name']}
                         onClientAuthenticated={this.handleClientAuthenticated}/>
                     <Chat
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client2Id}
+                        clientName={this.state[this.props.client2Id + 'Name']}
                         onClientAuthenticated={this.handleClientAuthenticated}/>
                 </div>
                 <LoadingOverlay loading={!this.state.allClientsAuthenticated}/>

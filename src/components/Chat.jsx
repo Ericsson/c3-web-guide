@@ -101,7 +101,8 @@ class Chat extends React.Component {
         return (
             <div ref={c => this.videoArea = c} style={chatStyle}>
                 <ChatHeader
-                    clientId={this.props.clientId}/>
+                    clientId={this.props.clientId}
+                    clientName={this.props.clientName}/>
                 <ChatMessageList
                     userId={this.state.userId}
                     messages={this.state.messages}/>
@@ -124,11 +125,14 @@ class ChatHeader extends React.Component {
             borderBottom: defaultBorder,
             padding: 5,
             fontWeight: 'bold',
-            color: defaultTextColor
-        }
+            color: defaultTextColor,
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis'
+        };
 
         return (
-            <div style={style}>{this.props.clientId}</div>
+            <div style={style}>{this.props.clientName || this.props.clientId}</div>
         );
     }
 }
