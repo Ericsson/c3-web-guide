@@ -121,7 +121,7 @@ class ChatHeader extends React.Component {
             textAlign: 'center',
             fontFamily: 'Helvetica, Arial, sans-serif',
             borderBottom: '1px solid #e1e1e1',
-            padding: '5px',
+            padding: 5,
             fontWeight: 'bold'
         }
 
@@ -148,7 +148,7 @@ class ChatMessageList extends React.Component {
         const style = {
             flex: '1',
             overflow: 'auto',
-            padding: '5px'
+            padding: 5
         };
 
         return (
@@ -170,9 +170,9 @@ class ChatMessage extends React.Component {
             padding: '6px 8px',
             float: this.props.authorId === this.props.userId ? 'right' : 'left',
             clear: 'both',
-            borderRadius: '12px',
-            fontSize: '12px',
-            margin: '4px',
+            borderRadius: 12,
+            fontSize: 12,
+            margin: 4,
             maxWidth: '80%'
         };
 
@@ -214,11 +214,11 @@ class ChatInput extends React.Component {
         const inputStyle = {
             flex: '1',
             outline: 'none',
-            padding: '5px',
-            margin: '0px',
+            padding: 5,
+            margin: 0,
             border: 'none',
             width: '100%',
-            minWidth: '0px',
+            minWidth: 0,
             borderLeft: '1px solid #e1e1e1',
             borderRight: '1px solid #e1e1e1'
         };
@@ -255,15 +255,15 @@ class VideoWindow extends React.Component {
     render() {
         const style = {
             position: 'absolute',
-            top: '0px',
-            left: '0px',
-            width: '125px',
+            top: 0,
+            left: 0,
+            width: 125,
             maxWidth: '50%',
             cursor: 'move',
             display: this.state.videoPlaying ? 'inline-block' : 'none',
             boxShadow: '0px 0px 15px rgba(50, 50, 50, 0.4)',
             border: '1px solid rgba(50, 50, 50, 0.5)',
-            borderRadius: '3px'
+            borderRadius: 3
         };
 
         return (

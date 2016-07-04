@@ -4,7 +4,7 @@ class LoadingOverlay extends React.Component {
     render() {
         const style = {
             position: 'absolute',
-            top: '0px',
+            top: 0,
             zIndex: '4',
             width: '100%',
             height: '100%',
@@ -14,7 +14,7 @@ class LoadingOverlay extends React.Component {
             fontWeight: 'bold',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '32px',
+            fontSize: 32,
             color: '#333'
         }
 

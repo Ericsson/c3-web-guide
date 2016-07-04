@@ -58,7 +58,7 @@ class Codearea extends React.Component {
       Object.assign(wrapperStyle, this.props.style);
 
       const bottomBoxStyle = {
-         height: '36px',
+         height: 36,
          background: '#f8f8f8',
          border: '1px solid #e1e1e1'
       };
@@ -72,7 +72,7 @@ class Codearea extends React.Component {
       return (
          <div style={wrapperStyle}>
             <Codemirror
-               ref={(c) => this.editor = c}
+               ref={c => this.editor = c}
                value={this.state.code}
                onChange={this.updateCode}
                options={codemirrorOptions}/>
