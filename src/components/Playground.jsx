@@ -17,23 +17,24 @@ function injectCode(code) {
 }
 
 class Playground extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
-            allClientsAuthenticated: false,
-            authenticatedClients: {}
+            loading: true,
+            authenticatedClients: {},
+            code: this.props.code
         };
+
+        this.state.authenticatedClients[this.props.client1Id] = false;
+        this.state.authenticatedClients[this.props.client2Id] = false;
 
         this.handleClientAuthenticated = this.handleClientAuthenticated.bind(this);
         this.runCode = this.runCode.bind(this);
     }
 
-    componentWillMount() {
-        const authenticatedClients = {};
-        authenticatedClients[this.props.client1Id] = false;
-        authenticatedClients[this.props.client2Id] = false;
-        this.setState({authenticatedClients});
+    componentWillReceiveProps(props) {
+        this.setState({code: props.code});
     }
 
     handleClientAuthenticated(clientId) {
@@ -41,15 +42,25 @@ class Playground extends React.Component {
         authenticatedClients[clientId] = true;
         this.setState({authenticatedClients});
 
-        let allClientsAuthenticated = true;
-        for(const client in authenticatedClients) {
-            allClientsAuthenticated = authenticatedClients[client];
+        if(Object.keys(authenticatedClients).every(key => authenticatedClients[key])) {
+            window[clientId].createRoom().then(room => {
+                window[clientId + 'Room'] = room;
+                const otherClientId = Object.keys(authenticatedClients).find(key => key !== clientId);
+                const otherUserId = window[otherClientId].user.id;
+                room.invite(otherUserId);
+            });
+        } else {
+            window[clientId].on('invite', room => {
+                window[clientId + 'Room'] = room;
+                room.join();
+                this.setState({loading: false});
+            });
         }
-        this.setState({allClientsAuthenticated});
     }
 
-    runCode(code) {
+    runCode() {
         const self = this;
+        let code = this.state.code;
         code = injectCode(code);
         eval(code);
         this.forceUpdate();
@@ -67,6 +78,10 @@ class Playground extends React.Component {
             flex: '1'
         };
 
+        const chatWrapperStyle = {
+            display: this.props.readOnly ? 'none' : 'block'
+        };
+
         const chatStyle = {
             width: '50%',
             height: 250
@@ -76,8 +91,12 @@ class Playground extends React.Component {
             <div style={wrapperStyle}>
                 <Codearea
                     style={codeareaStyle}
-                    onRunCode={this.runCode}/>
-                <div>
+                    code={this.state.code}
+                    onResetCode={() => {this.setState({code: this.props.code})}}
+                    onUpdateCode={(code) => {this.setState({code})}}
+                    onRunCode={this.runCode}
+                    readOnly={this.props.readOnly}/>
+                <div style={chatWrapperStyle}>
                     <Chat
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
@@ -91,7 +110,7 @@ class Playground extends React.Component {
                         clientName={this.state[this.props.client2Id + 'Name']}
                         onClientAuthenticated={this.handleClientAuthenticated}/>
                 </div>
-                <LoadingOverlay loading={!this.state.allClientsAuthenticated}/>
+                <LoadingOverlay loading={this.state.loading}/>
             </div>
         );
     }

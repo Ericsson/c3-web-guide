@@ -1,0 +1,45 @@
+{
+    "page1": {
+        "title": "Introduction",
+        "id": "introduction",
+        "file": "pages/page1.md",
+        "code": "pages/page1.js",
+        "readOnly": true
+    },
+    "page2": {
+        "title": "Authentication",
+        "id": "authentication",
+        "file": "pages/page2.md",
+        "code": "pages/page2.js",
+        "readOnly": true
+    },
+    "page3": {
+        "title": "Display name",
+        "id": "display-name",
+        "file": "pages/page3.md",
+        "code": "pages/page3.js",
+        "readOnly": false
+    },
+    "page4": {
+        "title": "Rooms",
+        "id": "rooms",
+        "file": "pages/page4.md",
+        "code": "pages/page4.js",
+        "readOnly": true
+    },
+    "page5": {
+        "title": "Messaging",
+        "id": "messaging",
+        "file": "pages/page5.md",
+        "code": "pages/page5.js",
+        "readOnly": false
+    },
+    "page6": {
+        "title": "WebRTC",
+        "id": "webrtc",
+        "file": "pages/page6.md",
+        "code": "pages/page6.js",
+        "readOnly": false
+    }
+}
+

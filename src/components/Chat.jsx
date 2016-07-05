@@ -121,7 +121,6 @@ class ChatHeader extends React.Component {
     render() {
         const style = {
             textAlign: 'center',
-            fontFamily: 'Helvetica, Arial, sans-serif',
             borderBottom: defaultBorder,
             padding: 5,
             fontWeight: 'bold',
@@ -170,7 +169,6 @@ class ChatMessageList extends React.Component {
 class ChatMessage extends React.Component {
     render() {
         const messageStyle = {
-            fontFamily: 'sans-serif',
             background: this.props.authorId === this.props.userId ? '#1496F0' : '#E6E6E6',
             color: this.props.authorId === this.props.userId ? '#fff' : '#222',
             padding: '6px 8px',

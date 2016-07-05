@@ -12,7 +12,7 @@ var config = {
         loaders: [
             {
                 test: /\.jsx?$/,
-                exclude: /node_modules/,
+                exclude: /(node_modules|src\/pages\/)/,
                 loader: 'babel-loader',
                 query: {
                     presets: ['es2015', 'react']
@@ -20,11 +20,15 @@ var config = {
             },
             {
                 test: /\.css$/,
-                loader: "style-loader!css-loader"
+                loader: 'style-loader!css-loader'
             },
             {
                 test: /\.md$/,
-                loader: "html!highlight!markdown"
+                loader: 'html!highlight!markdown'
+            },
+            {
+                test: /\.json$/,
+                loader: 'json'
             }
         ]
     }
