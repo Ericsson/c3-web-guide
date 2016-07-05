@@ -9,36 +9,11 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/keymap/sublime.js'
 
 class Codearea extends React.Component {
-   constructor() {
-      super();
-
-      this.state = {
-        code: ''
-      };
-
-      this.updateCode = this.updateCode.bind(this);
-      this.onRunCode = this.onRunCode.bind(this);
-      this.clearCode = this.clearCode.bind(this);
-   }
-
    componentDidMount() {
       let editorNode = ReactDOM.findDOMNode(this.editor);
       editorNode.style.flex = '1';
       editorNode.style.overflow = 'auto';
       editorNode.querySelector('.CodeMirror').style.height = '100%';
-   }
-
-   updateCode(newCode) {
-      this.setState({code: newCode});
-      this.props.onChange(newCode);
-   }
-
-   onRunCode() {
-      this.props.onRunCode(this.state.code);
-   }
-
-   clearCode() {
-      this.setState({code: ''});
    }
 
    render() {
@@ -64,30 +39,45 @@ class Codearea extends React.Component {
          border: defaultBorder
       };
 
-      const buttonStyle = {
+      const stageButtonStyle = {
+         height: 'inherit',
+         borderRight: defaultBorder
+      }
+
+      const codeButtonStyle = {
          float: 'right',
          height: 'inherit',
          borderLeft: defaultBorder
       };
 
+      const stageButtons = this.props.stages.map((stage, stageIndex) =>
+         <SimpleButton
+            style={stageButtonStyle}
+            onClick={() => this.props.onSelectStage(stageIndex)}
+            key={stageIndex}>
+            {stage}
+         </SimpleButton>
+      );
+
       return (
          <div style={wrapperStyle}>
             <Codemirror
                ref={c => this.editor = c}
-               value={this.state.code}
-               onChange={this.updateCode}
+               value={this.props.code}
+               onChange={this.props.onUpdateCode}
                options={codemirrorOptions}/>
             <div style={bottomBoxStyle}>
                <SimpleButton
-                  style={buttonStyle}
-                  onClick={this.onRunCode}>
+                  style={codeButtonStyle}
+                  onClick={this.props.onRunCode}>
                   Run code
                </SimpleButton>
                <SimpleButton
-                  style={buttonStyle}
-                  onClick={this.clearCode}>
+                  style={codeButtonStyle}
+                  onClick={this.props.onClearCode}>
                   Clear code
                </SimpleButton>
+               {stageButtons}
             </div>
          </div>
       );

@@ -4,46 +4,16 @@ import SimpleButton from './SimpleButton.jsx';
 import {defaultBorder, defaultTextColor} from '../constants.js';
 import * as cct from '@cct/libcct';
 
-function pushObserver(arr, callback) {
-    arr.push = function(e) {
-        Array.prototype.push.call(arr, e);
-        callback(arr);
-    };
-};
-
 class Chat extends React.Component {
     constructor() {
         super();
-
-        this.state = {
-            userId: undefined,
-            messages: []
-        };
 
         this.startMoveVideoWindow = this.startMoveVideoWindow.bind(this);
         this.moveVideoWindow = this.moveVideoWindow.bind(this);
     }
 
     componentDidMount() {
-        const clientId = this.props.clientId;
         this.videoNode = ReactDOM.findDOMNode(this.videoWindow);
-
-        window[clientId + 'Messages'] = [];
-        window[clientId + 'SendMessage'] = () => {};
-        window[clientId + 'StartCall'] = () => {};
-        window[clientId + 'VideoNode'] = this.videoNode;
-        window[clientId] = new cct.Client();
-
-        pushObserver(window[clientId + 'Messages'], arr => {
-            this.setState({messages: arr});
-        });
-
-        cct.Auth.anonymous({serverUrl: this.props.serverUrl})
-            .then(window[clientId].auth)
-            .then(client => {
-                this.props.onClientAuthenticated(clientId);
-                this.setState({userId: client.user.id});
-            });
     }
 
     moveVideoWindow(e, videoRect, videoArea, startPos) {
@@ -101,14 +71,11 @@ class Chat extends React.Component {
         return (
             <div ref={c => this.videoArea = c} style={chatStyle}>
                 <ChatHeader
-                    clientId={this.props.clientId}
-                    clientName={this.props.clientName}/>
+                    userId={this.props.userId}
+                    userName={this.props.userName}/>
                 <ChatMessageList
-                    userId={this.state.userId}
-                    messages={this.state.messages}/>
-                <ChatInput
-                    onSendMessage={window[this.props.clientId + 'SendMessage']}
-                    onStartCall={window[this.props.clientId + 'StartCall']}/>
+                    messages={[]}/>
+                <ChatInput/>
                 <VideoWindow
                     ref={c => this.videoWindow = c}
                     onStartMoveVideoWindow={this.startMoveVideoWindow}/>
@@ -132,7 +99,7 @@ class ChatHeader extends React.Component {
         };
 
         return (
-            <div style={style}>{this.props.clientName || this.props.clientId}</div>
+            <div style={style}>{this.props.userName || this.props.userId || 'nothing yet'}</div>
         );
     }
 }

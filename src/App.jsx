@@ -24,7 +24,7 @@ class App extends React.Component {
                 <Playground
                     style={playgroundStyle}
                     serverUrl={serverUrl}/>
-                <Markdown style={markdownStyle} src='guide.md'/>
+                <Markdown style={markdownStyle} src='guide2.md'/>
             </div>
         );
     }

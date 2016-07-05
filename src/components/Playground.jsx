@@ -8,49 +8,70 @@ const injections = {
     setName: 'var stateObj = {}; stateObj[caller + "Name"] = response; self.setState(stateObj);'
 };
 
-function injectCode(code) {
-    for(const functionName in injections) {
-        const pattern = new RegExp(`\(\\b\\w+\)\\.${functionName}\\(.*?\\)`, 'g');
-        code = code.replace(pattern, `$&.then(function(response) {var caller = '$1'; ${injections[functionName]} return response;})`);
-    }
-    return code;
-}
-
 class Playground extends React.Component {
     constructor() {
         super();
 
         this.state = {
-            allClientsAuthenticated: false,
-            authenticatedClients: {}
+            clients: {},
+            currentStage: 0,
+            code: {
+                stage0: '',
+                stage1: '',
+                stage2: ''
+            }
         };
 
-        this.handleClientAuthenticated = this.handleClientAuthenticated.bind(this);
+        this.selectStage = this.selectStage.bind(this);
+        this.updateCode = this.updateCode.bind(this);
+        this.clearCode = this.clearCode.bind(this);
         this.runCode = this.runCode.bind(this);
     }
 
-    componentWillMount() {
-        const authenticatedClients = {};
-        authenticatedClients[this.props.client1Id] = false;
-        authenticatedClients[this.props.client2Id] = false;
-        this.setState({authenticatedClients});
+    selectStage(stage) {
+        this.setState({currentStage: stage})
     }
 
-    handleClientAuthenticated(clientId) {
-        const authenticatedClients = this.state.authenticatedClients;
-        authenticatedClients[clientId] = true;
-        this.setState({authenticatedClients});
-
-        let allClientsAuthenticated = true;
-        for(const client in authenticatedClients) {
-            allClientsAuthenticated = authenticatedClients[client];
-        }
-        this.setState({allClientsAuthenticated});
+    updateCode(newCode) {
+        let newCodeObj = this.state.code;
+        newCodeObj['stage' + this.state.currentStage] = newCode;
+        this.setState({code: newCodeObj});
     }
 
-    runCode(code) {
+    clearCode() {
+        let newCodeObj = this.state.code;
+        newCodeObj['stage' + this.state.currentStage] = '';
+        this.setState({code: newCodeObj});
+    }
+
+    runCode() {
         const self = this;
-        code = injectCode(code);
+        let code = this.state.code['stage' + this.state.currentStage];
+        const clientVariablePattern = /\bvar\s+(\b.+?)\s?=/g;
+
+        if(this.state.currentStage === 0) {
+            let clients = this.state.clients;
+            let match = clientVariablePattern.exec(code);
+            while(match) {
+                clients[match[1]] = {};
+                match = clientVariablePattern.exec(code);
+            }
+        }
+
+        // code = code.replace(clientVariablePattern, '$&window.$1=');
+
+        const clientNames = Object.keys(this.state.clients);
+        for(const i in clientNames) {
+            const authPattern = new RegExp(`.then\\(${clientNames[i]}.auth\\)`);
+            // code = code.replace(authPattern, `$&.then(function(client) {self.state.clients[${clientNames[i]}].user = client.user; return client;})`)
+            code = code.replace(authPattern, `$&.then(function(client) {console.log("tes"); return client;})`);
+        }
+
+        // for(const functionName in injections) {
+        //     const functionPattern = new RegExp(`\(\\b\\w+\)\\.${functionName}\\(.*?\\)`, 'g');
+        //     code = code.replace(functionPattern, `$&.then(function(response) {var caller = '$1'; ${injections[functionName]} return response;})`);
+        // }
+
         eval(code);
         this.forceUpdate();
     }
@@ -76,30 +97,21 @@ class Playground extends React.Component {
             <div style={wrapperStyle}>
                 <Codearea
                     style={codeareaStyle}
-                    onRunCode={this.runCode}/>
+                    stages={Object.keys(this.state.code)}
+                    code={this.state.code['stage' + this.state.currentStage]}
+                    onSelectStage={this.selectStage}
+                    onRunCode={this.runCode}
+                    onUpdateCode={this.updateCode}
+                    onClearCode={this.clearCode}/>
                 <div>
                     <Chat
-                        style={chatStyle}
-                        serverUrl={this.props.serverUrl}
-                        clientId={this.props.client1Id}
-                        clientName={this.state[this.props.client1Id + 'Name']}
-                        onClientAuthenticated={this.handleClientAuthenticated}/>
+                        style={chatStyle}/>
                     <Chat
-                        style={chatStyle}
-                        serverUrl={this.props.serverUrl}
-                        clientId={this.props.client2Id}
-                        clientName={this.state[this.props.client2Id + 'Name']}
-                        onClientAuthenticated={this.handleClientAuthenticated}/>
+                        style={chatStyle}/>
                 </div>
-                <LoadingOverlay loading={!this.state.allClientsAuthenticated}/>
             </div>
         );
     }
-}
-
-Playground.defaultProps = {
-    client1Id: 'client1',
-    client2Id: 'client2'
 }
 
 export default Playground;
