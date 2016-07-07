@@ -12,6 +12,7 @@ class Codearea extends React.Component {
    componentDidMount() {
       let editorNode = ReactDOM.findDOMNode(this.editor);
       editorNode.style.flex = '1';
+      editorNode.style.flexBasis = '0px';
       editorNode.style.overflow = 'auto';
       editorNode.querySelector('.CodeMirror').style.height = '100%';
    }

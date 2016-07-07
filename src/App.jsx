@@ -87,6 +87,7 @@ class App extends React.Component {
 
         const markdownStyle = {
             flex: '1',
+            flexBasis: 0,
             overflow: 'auto',
             padding: 20
         };
