@@ -11,7 +11,6 @@ class LoadingOverlay extends React.Component {
             height: '100%',
             display: this.props.loading ? 'flex' : 'none',
             background: 'rgba(250, 250, 250, 0.8)',
-            fontFamily: 'Helvetica, Arial, sans-serif',
             fontWeight: 'bold',
             alignItems: 'center',
             justifyContent: 'center',

@@ -9,36 +9,12 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/keymap/sublime.js'
 
 class Codearea extends React.Component {
-   constructor() {
-      super();
-
-      this.state = {
-        code: ''
-      };
-
-      this.updateCode = this.updateCode.bind(this);
-      this.onRunCode = this.onRunCode.bind(this);
-      this.clearCode = this.clearCode.bind(this);
-   }
-
    componentDidMount() {
       let editorNode = ReactDOM.findDOMNode(this.editor);
       editorNode.style.flex = '1';
+      editorNode.style.flexBasis = '0px';
       editorNode.style.overflow = 'auto';
       editorNode.querySelector('.CodeMirror').style.height = '100%';
-   }
-
-   updateCode(newCode) {
-      this.setState({code: newCode});
-      this.props.onChange(newCode);
-   }
-
-   onRunCode() {
-      this.props.onRunCode(this.state.code);
-   }
-
-   clearCode() {
-      this.setState({code: ''});
    }
 
    render() {
@@ -48,20 +24,21 @@ class Codearea extends React.Component {
          theme: 'material',
          indentUnit: 4,
          keyMap: 'sublime',
-         lineWrapping: true
+         lineWrapping: true,
+         readOnly: this.props.readOnly ? 'nocursor': false
       };
 
       let wrapperStyle = {
          display: 'flex',
-         flexDirection: 'column',
-         overflow: 'auto'
+         flexDirection: 'column'
       };
       Object.assign(wrapperStyle, this.props.style);
 
       const bottomBoxStyle = {
          height: 36,
          background: '#f8f8f8',
-         border: defaultBorder
+         border: defaultBorder,
+         display: this.props.readOnly ? 'none' : 'block'
       };
 
       const buttonStyle = {
@@ -74,19 +51,19 @@ class Codearea extends React.Component {
          <div style={wrapperStyle}>
             <Codemirror
                ref={c => this.editor = c}
-               value={this.state.code}
-               onChange={this.updateCode}
+               value={this.props.code}
+               onChange={this.props.onUpdateCode}
                options={codemirrorOptions}/>
             <div style={bottomBoxStyle}>
                <SimpleButton
                   style={buttonStyle}
-                  onClick={this.onRunCode}>
+                  onClick={this.props.onRunCode}>
                   Run code
                </SimpleButton>
                <SimpleButton
                   style={buttonStyle}
-                  onClick={this.clearCode}>
-                  Clear code
+                  onClick={this.props.onResetCode}>
+                  Reset
                </SimpleButton>
             </div>
          </div>
