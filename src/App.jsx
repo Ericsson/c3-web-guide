@@ -5,6 +5,7 @@ import Markdown from './components/Markdown.jsx';
 import PageSelector from './components/PageSelector.jsx';
 import {serverUrl, pageTitle} from './constants.js';
 import guidePages from './pages.json';
+import Resizer from './components/Resizer.jsx';
 import './base.css';
 
 class App extends React.Component {
@@ -76,7 +77,8 @@ class App extends React.Component {
         };
 
         const playgroundStyle = {
-            flex: '1'
+            flex: '1',
+            overflow: 'auto'
         };
 
         const guidePageWrapperStyle = {
@@ -106,6 +108,7 @@ class App extends React.Component {
                             onGoToPrevPage={this.goToPrevPage}
                             onGoToNextPage={this.goToNextPage}/>
                     </div>
+                    <Resizer elementMinSize={200}/>
                     <Playground
                         style={playgroundStyle}
                         code={require(`raw!./${guidePages[`page${this.state.currentPage}`].code}`)}
