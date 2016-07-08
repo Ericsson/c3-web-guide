@@ -10,11 +10,20 @@ import 'codemirror/keymap/sublime.js'
 
 class Codearea extends React.Component {
    componentDidMount() {
-      let editorNode = ReactDOM.findDOMNode(this.editor);
+      const editorNode = ReactDOM.findDOMNode(this.editor);
+      const codeMirrorNode = editorNode.querySelector('.CodeMirror');
+
       editorNode.style.flex = '1';
       editorNode.style.flexBasis = '0px';
       editorNode.style.overflow = 'auto';
-      editorNode.querySelector('.CodeMirror').style.height = '100%';
+      editorNode.style.position = 'relative';
+
+      codeMirrorNode.style.height = '100%';
+      codeMirrorNode.style.position = 'absolute';
+      codeMirrorNode.style.top = '0';
+      codeMirrorNode.style.right = '0';
+      codeMirrorNode.style.bottom = '0';
+      codeMirrorNode.style.left = '0';
    }
 
    render() {
