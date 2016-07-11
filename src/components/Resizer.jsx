@@ -9,27 +9,34 @@ class Resizer extends React.Component {
             directionColumn: false
         };
 
+        this.resizeHandler = this.resizeHandler.bind(this);
         this.nodeCreated = this.nodeCreated.bind(this);
     }
 
     nodeCreated(node) {
-        this.node = node;
         this.prevNode = node.previousSibling;
         this.nextNode = node.nextSibling;
         this.parentNode = node.parentNode;
+
         const directionColumn = this.parentNode.style.flexDirection === 'column';
         this.setState({directionColumn});
 
-        window.addEventListener('resize', () => {
-            const prevNodeRect = this.prevNode.getBoundingClientRect();
-            const nextNodeRect = this.nextNode.getBoundingClientRect();
-            const prevNodeSize = directionColumn ? prevNodeRect.height : prevNodeRect.width;
-            const nextNodeSize = directionColumn ? nextNodeRect.height : nextNodeRect.width;
+        window.addEventListener('resize', this.resizeHandler);
+    }
 
-            if(prevNodeSize < this.props.elementMinSize || nextNodeSize < this.props.elementMinSize) {
-                this.prevNode.style.flex = '1';
-            }
-        });
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.resizeHandler);
+    }
+
+    resizeHandler() {
+        const prevNodeRect = this.prevNode.getBoundingClientRect();
+        const nextNodeRect = this.nextNode.getBoundingClientRect();
+        const prevNodeSize = this.state.directionColumn ? prevNodeRect.height : prevNodeRect.width;
+        const nextNodeSize = this.state.directionColumn ? nextNodeRect.height : nextNodeRect.width;
+
+        if(prevNodeSize < this.props.elementMinSize || nextNodeSize < this.props.elementMinSize) {
+            this.prevNode.style.flex = '1';
+        }
     }
 
     startResize() {
