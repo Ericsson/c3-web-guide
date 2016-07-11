@@ -20,18 +20,17 @@ class Chat extends React.Component {
             messages: []
         };
 
+        this.videoNodeCreated = this.videoNodeCreated.bind(this);
         this.startMoveVideoWindow = this.startMoveVideoWindow.bind(this);
         this.moveVideoWindow = this.moveVideoWindow.bind(this);
     }
 
     componentDidMount() {
         const clientId = this.props.clientId;
-        this.videoNode = ReactDOM.findDOMNode(this.videoWindow);
 
         window[clientId + 'Messages'] = [];
         window[clientId + 'SendMessage'] = () => {};
         window[clientId + 'StartCall'] = () => {};
-        window[clientId + 'VideoNode'] = this.videoNode;
         window[clientId] = new cct.Client();
 
         pushObserver(window[clientId + 'Messages'], arr => {
@@ -46,36 +45,42 @@ class Chat extends React.Component {
             });
     }
 
+    videoNodeCreated(videoNode) {
+        window[this.props.clientId + 'VideoNode'] = videoNode;
+    }
+
     moveVideoWindow(e, videoRect, videoArea, startPos) {
         const newLeft = e.clientX - videoArea.left - startPos.x;
         const newTop = e.clientY - videoArea.top - startPos.y;
 
         if(newLeft <= 0) {
-            this.videoNode.style.left = '0px';
+            this.videoWindow.style.left = '0px';
         } else if (newLeft >= videoArea.width - videoRect.width) {
-            this.videoNode.style.left = `${videoArea.width - videoRect.width - 1}px`
+            this.videoWindow.style.left = `${videoArea.width - videoRect.width - 1}px`
         } else {
-            this.videoNode.style.left = `${newLeft}px`;
+            this.videoWindow.style.left = `${newLeft}px`;
         }
 
         if(newTop <= 0) {
-            this.videoNode.style.top = '0px';
+            this.videoWindow.style.top = '0px';
         } else if (newTop >= videoArea.height - videoRect.height) {
-            this.videoNode.style.top = `${videoArea.height - videoRect.height - 1}px`
+            this.videoWindow.style.top = `${videoArea.height - videoRect.height - 1}px`
         } else {
-            this.videoNode.style.top = `${newTop}px`;
+            this.videoWindow.style.top = `${newTop}px`;
         }
     }
 
     startMoveVideoWindow(e) {
         const videoArea = ReactDOM.findDOMNode(this.videoArea).getBoundingClientRect();
-        const videoRect = this.videoNode.getBoundingClientRect();
+        const videoRect = this.videoWindow.getBoundingClientRect();
         const startPos = {
-            x: e.clientX - e.target.getBoundingClientRect().left,
-            y: e.clientY - e.target.getBoundingClientRect().top
+            x: e.clientX - videoRect.left,
+            y: e.clientY - videoRect.top
         };
 
+
         const handleMouseMove = function(e) {
+            window.getSelection().removeAllRanges();
             this.moveVideoWindow(e, videoRect, videoArea, startPos);
         }.bind(this);
 
@@ -99,7 +104,7 @@ class Chat extends React.Component {
         Object.assign(chatStyle, this.props.style);
 
         return (
-            <div ref={c => this.videoArea = c} style={chatStyle}>
+            <div ref={c => {this.videoArea = c}} style={chatStyle}>
                 <ChatHeader
                     clientId={this.props.clientId}
                     clientName={this.props.clientName}/>
@@ -110,7 +115,8 @@ class Chat extends React.Component {
                     onSendMessage={window[this.props.clientId + 'SendMessage']}
                     onStartCall={window[this.props.clientId + 'StartCall']}/>
                 <VideoWindow
-                    ref={c => this.videoWindow = c}
+                    onVideoWindowCreated={videoWindow => {this.videoWindow = videoWindow}}
+                    onVideoNodeCreated={this.videoNodeCreated}
                     onStartMoveVideoWindow={this.startMoveVideoWindow}/>
             </div>
         );
@@ -246,37 +252,62 @@ class ChatInput extends React.Component {
 class VideoWindow extends React.Component {
     constructor() {
         super();
+
         this.state = {
             videoPlaying: false
         };
+
+        this.videoWindowCreated = this.videoWindowCreated.bind(this);
+        this.videoNodeCreated = this.videoNodeCreated.bind(this);
     }
-    componentDidMount() {
-        this.videoNode.addEventListener('playing', () => {
+
+    videoWindowCreated(videoWindow) {
+        // SAFARI
+        const observer = new MutationObserver(() => {
+            this.setState({videoPlaying: true});
+        });
+        observer.observe(videoWindow, {childList: true})
+
+        this.props.onVideoWindowCreated(videoWindow);
+    }
+
+    videoNodeCreated(videoNode) {
+        // CHROME AND FIREFOX
+        videoNode.addEventListener('playing', () => {
             this.setState({videoPlaying: true});
         })
+
+        this.props.onVideoNodeCreated(videoNode);
     }
 
     render() {
-        const style = {
+        const wrapperStyle = {
             position: 'absolute',
             top: 0,
             left: 0,
             width: 125,
             maxWidth: '50%',
             cursor: 'move',
-            display: this.state.videoPlaying ? 'inline-block' : 'none',
+            visibility: this.state.videoPlaying ? 'visible' : 'hidden',
             boxShadow: '0px 0px 15px rgba(50, 50, 50, 0.4)',
             border: '1px solid rgba(50, 50, 50, 0.5)',
             borderRadius: 3
         };
 
+        const videoStyle = {
+            width: '100%',
+            display: 'block'
+        }
+
         return (
-            <video
-                style={style}
-                autoPlay
-                onMouseDown={this.props.onStartMoveVideoWindow}
-                ref={c => this.videoNode = c}>
-            </video>
+            <div style={wrapperStyle}
+                 onMouseDown={this.props.onStartMoveVideoWindow}
+                 ref={this.videoWindowCreated}>
+                <video autoPlay
+                       style={videoStyle}
+                       ref={this.videoNodeCreated}>
+                </video>
+            </div>
         );
     }
 }

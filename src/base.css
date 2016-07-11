@@ -4,5 +4,7 @@ body {
 }
 
 object[type$="x-temwebrtcplugin"] {
-    display: none;
+    display: block;
+    pointer-events: none;
+    width: 100%;
 }
