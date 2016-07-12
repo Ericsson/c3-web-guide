@@ -1,11 +1,8 @@
 import React from 'react';
-import GuideHeader from './components/GuideHeader.jsx';
-import Playground from './components/Playground.jsx';
-import Markdown from './components/Markdown.jsx';
-import PageSelector from './components/PageSelector.jsx';
+import Home from './components/Home.jsx';
+import Guide from './components/Guide.jsx';
+import pages from './pages.json';
 import {serverUrl, pageTitle} from './constants.js';
-import guidePages from './pages.json';
-import Resizer from './components/Resizer.jsx';
 import './base.css';
 
 class App extends React.Component {
@@ -13,108 +10,104 @@ class App extends React.Component {
         super();
 
         this.state = {
-            numberOfGuidePages: Object.keys(guidePages).length,
-            currentPage: 1
+            currentState: 'home',
+            currentPage: 1,
+            changingHash: false
         };
 
-        this.setPage = this.setPage.bind(this);
+        this.handleRoute = this.handleRoute.bind(this);
+        this.setCurrentPage = this.setCurrentPage.bind(this);
         this.goToPrevPage = this.goToPrevPage.bind(this);
         this.goToNextPage = this.goToNextPage.bind(this);
     }
 
-    setPage() {
-        const currentPageId = window.location.hash.substring(1);
-        const currentPageKey = Object.keys(guidePages)
-            .find(page => guidePages[page].id === currentPageId);
-        const currentPage = currentPageKey ? currentPageKey.split('page')[1] : null;
+    handleRoute() {
+        const hash = window.location.hash.substring(1);
+        const currentPageKey = Object.keys(pages)
+            .find(page => pages[page].id === hash);
 
-        if(currentPage) {
-            this.setState({currentPage});
+        if(currentPageKey) {
+            this.setState({
+                currentState: 'guide',
+                currentPage: currentPageKey.split('page')[1]
+            });
+            document.title = `${pageTitle} - ${pages[currentPageKey].title}`;
+        } else if (hash) {
+            this.setState({
+                currentState: 'home',
+                changingHash: true
+            });
+            window.location.hash = ' ';
+            document.title = pageTitle;
         } else {
-            window.location.hash = guidePages[`page${this.state.currentPage}`].id;
+            this.setState({currentState: 'home'});
+            document.title = pageTitle;
         }
-
-        document.title = `${pageTitle} - ${guidePages[`page${currentPage || this.state.currentPage}`].title}`;
     }
 
-    componentWillMount() {
-        this.setPage();
-        window.onhashchange = () => {
-            this.setPage();
-        };
+    setCurrentPage(page) {
+        this.setState({
+            currentPage: page,
+            changingHash: true
+        });
+        window.location.hash = pages[`page${page}`].id
+        document.title = `${pageTitle} - ${pages[`page${page}`].title}`;
     }
 
     goToPrevPage() {
         let currentPage = this.state.currentPage;
+
         if(currentPage > 1) {
             currentPage--;
         } else {
-            currentPage = this.state.numberOfGuidePages;
+            currentPage = Object.keys(pages).length;
         }
-        window.location.hash = guidePages[`page${currentPage}`].id;
+
+        this.setCurrentPage(currentPage);
     }
 
     goToNextPage() {
         let currentPage = this.state.currentPage;
-        if(currentPage < this.state.numberOfGuidePages) {
+
+        if(currentPage < Object.keys(pages).length) {
             currentPage++;
         } else {
             currentPage = 1;
         }
-        window.location.hash = guidePages[`page${currentPage}`].id;
+
+        this.setCurrentPage(currentPage);
+    }
+
+    componentWillMount() {
+        this.handleRoute();
+        window.onhashchange = () => {
+            if(this.state.changingHash) {
+                this.setState({changingHash: false});
+            } else {
+                this.handleRoute();
+            }
+        }
     }
 
     render() {
-        const wrapperStyle = {
-            height: '100vh',
-            display: 'flex',
-            flexDirection: 'column'
+        const homeStyle = {
+            display: this.state.currentState === 'home' ? 'block' : 'none'
         };
 
-        const contentWrapperStyle = {
-            flex: '1',
-            display: 'flex'
-        };
-
-        const playgroundStyle = {
-            flex: '1',
-            overflow: 'auto'
-        };
-
-        const guidePageWrapperStyle = {
-            flex: '1',
-            display: 'flex',
-            flexDirection: 'column'
-        };
-
-        const markdownStyle = {
-            flex: '1',
-            flexBasis: 0,
-            overflow: 'auto',
-            padding: 20
+        const guideStyle = {
+            display: this.state.currentState === 'guide' ? 'flex' : 'none'
         };
 
         return (
-            <div style={wrapperStyle}>
-                <GuideHeader/>
-                <div style={contentWrapperStyle}>
-                    <div style={guidePageWrapperStyle}>
-                        <Markdown
-                            style={markdownStyle}
-                            src={guidePages[`page${this.state.currentPage}`].file}/>
-                        <PageSelector
-                            numberOfPages={this.state.numberOfGuidePages}
-                            currentPage={this.state.currentPage}
-                            onGoToPrevPage={this.goToPrevPage}
-                            onGoToNextPage={this.goToNextPage}/>
-                    </div>
-                    <Resizer elementMinSize={200}/>
-                    <Playground
-                        style={playgroundStyle}
-                        code={require(`raw!./${guidePages[`page${this.state.currentPage}`].code}`)}
-                        readOnly={guidePages[`page${this.state.currentPage}`].readOnly}
-                        serverUrl={serverUrl}/>
-                </div>
+            <div>
+                <Home style={homeStyle}
+                      pages={pages}/>
+                <Guide style={guideStyle}
+                       pages={pages}
+                       currentPage={this.state.currentPage}
+                       onGoToPrevPage={this.goToPrevPage}
+                       onGoToNextPage={this.goToNextPage}
+                       serverUrl={serverUrl}/>
             </div>
         );
     }

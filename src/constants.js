@@ -1,4 +1,4 @@
-export const serverUrl = 'https://webrtc-test.cct.ericsson.net';
+export const serverUrl = 'https://localhost:8448';
 export const pageTitle = 'C3 Web Guide';
 export const defaultTextColor = '#333';
 export const defaultBorderColor = '#e1e1e1';
