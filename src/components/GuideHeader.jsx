@@ -9,14 +9,20 @@ class GuideHeader extends React.Component {
         };
 
         const textStyle = {
-            color: defaultTextColor,
             margin: 0,
             padding: '5px 0'
         };
 
+        const linkStyle = {
+            color: defaultTextColor,
+            textDecoration: 'none'
+        };
+
         return (
             <div style={wrapperStyle}>
-                <h1 style={textStyle}>{pageTitle}</h1>
+                <h1 style={textStyle}>
+                    <a style={linkStyle} href="#">{pageTitle}</a>
+                </h1>
             </div>
         );
     }
