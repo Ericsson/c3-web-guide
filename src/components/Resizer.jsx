@@ -10,13 +10,12 @@ class Resizer extends React.Component {
         };
 
         this.resizeHandler = this.resizeHandler.bind(this);
-        this.nodeCreated = this.nodeCreated.bind(this);
     }
 
-    nodeCreated(node) {
-        this.prevNode = node.previousSibling;
-        this.nextNode = node.nextSibling;
-        this.parentNode = node.parentNode;
+    componentDidMount() {
+        this.prevNode = this.node.previousSibling;
+        this.nextNode = this.node.nextSibling;
+        this.parentNode = this.node.parentNode;
 
         const directionColumn = this.parentNode.style.flexDirection === 'column';
         this.setState({directionColumn});
@@ -90,7 +89,7 @@ class Resizer extends React.Component {
         return (
             <div
                 onMouseDown={this.startResize.bind(this)}
-                ref={this.nodeCreated}
+                ref={c => {this.node = c}}
                 style={style}/>
         );
     }

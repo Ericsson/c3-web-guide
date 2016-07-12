@@ -2,6 +2,7 @@
     "page1": {
         "title": "Introduction",
         "id": "introduction",
+        "description": "Learn how to use the guide and how to create a client.",
         "file": "pages/page1.md",
         "code": "pages/page1.js",
         "readOnly": true
@@ -9,6 +10,7 @@
     "page2": {
         "title": "Authentication",
         "id": "authentication",
+        "description": "Learn how to register and login users, and how to authenticate them.",
         "file": "pages/page2.md",
         "code": "pages/page2.js",
         "readOnly": true
@@ -16,6 +18,7 @@
     "page3": {
         "title": "Display name",
         "id": "display-name",
+        "description": "Learn how to change the display name of a user.",
         "file": "pages/page3.md",
         "code": "pages/page3.js",
         "readOnly": false
@@ -23,6 +26,7 @@
     "page4": {
         "title": "Rooms",
         "id": "rooms",
+        "description": "Learn how to create a room and invite users to it.",
         "file": "pages/page4.md",
         "code": "pages/page4.js",
         "readOnly": true
@@ -30,6 +34,7 @@
     "page5": {
         "title": "Messaging",
         "id": "messaging",
+        "description": "Learn how to send messages to users within a room.",
         "file": "pages/page5.md",
         "code": "pages/page5.js",
         "readOnly": false
@@ -37,6 +42,7 @@
     "page6": {
         "title": "WebRTC",
         "id": "webrtc",
+        "description": "Learn how to setup a WebRTC video call between users within a room.",
         "file": "pages/page6.md",
         "code": "pages/page6.js",
         "readOnly": false
