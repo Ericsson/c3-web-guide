@@ -7,17 +7,11 @@ import Resizer from './Resizer.jsx';
 
 class Guide extends React.Component {
     render() {
-        const wrapperStyle = {
-            height: '100vh',
-            display: 'flex',
-            flexDirection: 'column'
-        };
-        Object.assign(wrapperStyle, this.props.style);
 
-        const contentWrapperStyle = {
-            flex: '1',
+        const wrapperStyle = {
             display: 'flex'
         };
+        Object.assign(wrapperStyle, this.props.style);
 
         const playgroundStyle = {
             flex: '1',
@@ -39,25 +33,22 @@ class Guide extends React.Component {
 
         return (
             <div style={wrapperStyle}>
-                <GuideHeader/>
-                <div style={contentWrapperStyle}>
-                    <div style={guidePageWrapperStyle}>
-                        <Markdown
-                            style={markdownStyle}
-                            src={this.props.pages[`page${this.props.currentPage}`].file}/>
-                        <PageSelector
-                            numberOfPages={Object.keys(this.props.pages).length}
-                            currentPage={this.props.currentPage}
-                            onGoToPrevPage={this.props.onGoToPrevPage}
-                            onGoToNextPage={this.props.onGoToNextPage}/>
-                    </div>
-                    <Resizer elementMinSize={200}/>
-                    <Playground
-                        style={playgroundStyle}
-                        code={require(`raw!../${this.props.pages[`page${this.props.currentPage}`].code}`)}
-                        readOnly={this.props.pages[`page${this.props.currentPage}`].readOnly}
-                        serverUrl={this.props.serverUrl}/>
+                <div style={guidePageWrapperStyle}>
+                    <Markdown
+                        style={markdownStyle}
+                        src={this.props.pages[`page${this.props.currentPage}`].file}/>
+                    <PageSelector
+                        numberOfPages={Object.keys(this.props.pages).length}
+                        currentPage={this.props.currentPage}
+                        onGoToPrevPage={this.props.onGoToPrevPage}
+                        onGoToNextPage={this.props.onGoToNextPage}/>
                 </div>
+                <Resizer elementMinSize={200}/>
+                <Playground
+                    style={playgroundStyle}
+                    code={require(`raw!../${this.props.pages[`page${this.props.currentPage}`].code}`)}
+                    readOnly={this.props.pages[`page${this.props.currentPage}`].readOnly}
+                    serverUrl={this.props.serverUrl}/>
             </div>
         );
     }

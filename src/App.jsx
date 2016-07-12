@@ -1,4 +1,5 @@
 import React from 'react';
+import GuideHeader from './components/GuideHeader.jsx';
 import Home from './components/Home.jsx';
 import Guide from './components/Guide.jsx';
 import pages from './pages.json';
@@ -90,16 +91,25 @@ class App extends React.Component {
     }
 
     render() {
+        const wrapperStyle = {
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh'
+        };
+
         const homeStyle = {
+            flex: '1',
             display: this.state.currentState === 'home' ? 'block' : 'none'
         };
 
         const guideStyle = {
+            flex: '1',
             display: this.state.currentState === 'guide' ? 'flex' : 'none'
         };
 
         return (
-            <div>
+            <div style={wrapperStyle}>
+                <GuideHeader/>
                 <Home style={homeStyle}
                       pages={pages}/>
                 <Guide style={guideStyle}
