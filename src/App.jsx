@@ -1,5 +1,7 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import GuideHeader from './components/GuideHeader.jsx';
+import ToCMenu from './components/ToCMenu.jsx';
 import Home from './components/Home.jsx';
 import Guide from './components/Guide.jsx';
 import pages from './pages.json';
@@ -13,13 +15,16 @@ class App extends React.Component {
         this.state = {
             currentState: 'home',
             currentPage: 1,
-            changingHash: false
+            changingHash: false,
+            showToCMenu: false
         };
 
         this.handleRoute = this.handleRoute.bind(this);
         this.setCurrentPage = this.setCurrentPage.bind(this);
         this.goToPrevPage = this.goToPrevPage.bind(this);
         this.goToNextPage = this.goToNextPage.bind(this);
+        this.clickHandler = this.clickHandler.bind(this);
+        this.toggleToCMenu = this.toggleToCMenu.bind(this);
     }
 
     handleRoute() {
@@ -90,6 +95,25 @@ class App extends React.Component {
         }
     }
 
+    clickHandler() {
+        this.toggleToCMenu();
+    }
+
+    toggleToCMenu() {
+        const homeNode = ReactDOM.findDOMNode(this.home);
+        const guideNode = ReactDOM.findDOMNode(this.guide);
+
+        if(this.state.showToCMenu) {
+            homeNode.removeEventListener('click', this.clickHandler);
+            guideNode.removeEventListener('click', this.clickHandler);
+        } else {
+            homeNode.addEventListener('click', this.clickHandler);
+            guideNode.addEventListener('click', this.clickHandler);
+        }
+
+        this.setState({showToCMenu: !this.state.showToCMenu});
+    }
+
     render() {
         const wrapperStyle = {
             display: 'flex',
@@ -107,17 +131,28 @@ class App extends React.Component {
             display: this.state.currentState === 'guide' ? 'flex' : 'none'
         };
 
+        const ToCMenuStyle = {
+            position: 'absolute',
+            transform: `translateX(${this.state.showToCMenu ? '0' : '-100%'})`,
+            transition: 'transform 0.15s'
+        };
+
         return (
             <div style={wrapperStyle}>
-                <GuideHeader/>
+                <GuideHeader onToggleToCMenu={this.toggleToCMenu}/>
+                <ToCMenu style={ToCMenuStyle}
+                         pages={pages}
+                         onListItemClicked={this.toggleToCMenu}/>
                 <Home style={homeStyle}
-                      pages={pages}/>
+                      pages={pages}
+                      ref={node => {this.home = node}}/>
                 <Guide style={guideStyle}
                        pages={pages}
                        currentPage={this.state.currentPage}
                        onGoToPrevPage={this.goToPrevPage}
                        onGoToNextPage={this.goToNextPage}
-                       serverUrl={serverUrl}/>
+                       serverUrl={serverUrl}
+                       ref={node => {this.guide = node}}/>
             </div>
         );
     }
