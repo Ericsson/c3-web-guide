@@ -7,7 +7,6 @@ import Resizer from './Resizer.jsx';
 
 class Guide extends React.Component {
     render() {
-
         const wrapperStyle = {
             display: 'flex'
         };
