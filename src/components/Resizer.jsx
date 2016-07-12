@@ -51,6 +51,7 @@ class Resizer extends React.Component {
 
         const handleMouseMove = e => {
             e.preventDefault();
+            e.returnValue = false;
             window.getSelection().removeAllRanges();
 
             const parentNodeSize = directionColumn ? parentNodeRect.height : parentNodeRect.width;
