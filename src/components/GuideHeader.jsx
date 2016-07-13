@@ -1,6 +1,6 @@
 import React from 'react';
 import ToCMenuButton from './ToCMenuButton.jsx';
-import {defaultTextColor, defaultBorder, pageTitle} from '../constants.js';
+import {defaultTextColor, defaultBorder, pageTitle, lightGreyColor} from '../constants.js';
 import ericssonGradient from '../ericsson_gradient.jpg';
 import ericssonLogo from '../ericsson_logo.svg';
 
@@ -13,7 +13,7 @@ class GuideHeader extends React.Component {
             alignItems: 'center',
             position: 'relative',
             zIndex: 1,
-            background: '#fff',
+            background: lightGreyColor,
             overflow: 'hidden'
         };
 

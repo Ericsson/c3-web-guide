@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SimpleButton from './SimpleButton.jsx';
-import {defaultBorder, defaultTextColor} from '../constants.js';
+import {defaultBorder, defaultTextColor, lightGreyColor} from '../constants.js';
 import * as cct from '@cct/libcct';
 
 function pushObserver(arr, callback) {
@@ -133,7 +133,8 @@ class ChatHeader extends React.Component {
             color: defaultTextColor,
             overflow: 'hidden',
             whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis'
+            textOverflow: 'ellipsis',
+            background: lightGreyColor
         };
 
         return (

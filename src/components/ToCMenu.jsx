@@ -1,5 +1,5 @@
 import React from 'react';
-import {defaultBorder, defaultTextColor} from '../constants.js';
+import {defaultBorder, defaultTextColor, lightGreyColor} from '../constants.js';
 
 class ToCMenu extends React.Component {
     render() {
@@ -18,8 +18,7 @@ class ToCMenu extends React.Component {
             listStyleType: 'none',
             padding: 0,
             margin: 0,
-            marginBottom: -1,
-            background: '#fff'
+            marginBottom: -1
         };
 
         return (
@@ -53,12 +52,13 @@ class ListItem extends React.Component {
         const style = {
             padding: '10px 20px',
             boxSizing: 'border-box',
-            background: this.state.active ? '#fff' : '#fafafa',
+            background: this.state.active ? '#fff' : lightGreyColor,
             display: 'inline-block',
             width: '100%',
             textDecoration: 'none',
             color: defaultTextColor,
-            borderBottom: defaultBorder
+            borderBottom: defaultBorder,
+            fontWeight: '500'
         };
 
         return (
