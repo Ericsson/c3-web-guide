@@ -50,7 +50,7 @@ class Home extends React.Component {
         return (
             <div style={wrapperStyle}>
                 <div style={style}>
-                    <Markdown src="home.md"/>
+                    <Markdown src='home.md'/>
                     <ul style={listStyle}>
                         {Object.keys(pages).map((pageId, index) =>
                             <li key={index} style={listItemStyle}>
