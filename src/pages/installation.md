@@ -1,5 +1,5 @@
 ## Installation
-There are two ways to add the C3 Web SDK to your app:
+To use the C3 Web SDK you have to add it to your app. There are two ways to do this:
 
 ### Install using npm
 The package is currently scoped to `@cct` and published at `https://npm.cct.ericsson.net`, so first you need to set the registry config for the `@cct` scope using:
@@ -22,3 +22,4 @@ Alternatively you can include the C3 Web SDK by linking it directly like this:
 ```
 <script src="https://get.cct.ericsson.net/latest/cct.js"></script>
 ```
+After you have included the SDK you're good to go!

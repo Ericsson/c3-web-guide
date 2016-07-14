@@ -93,7 +93,7 @@ class Playground extends React.Component {
                     style={codeareaStyle}
                     code={this.state.code}
                     onResetCode={() => {this.setState({code: this.props.code})}}
-                    onUpdateCode={(code) => {this.setState({code})}}
+                    onUpdateCode={code => {this.setState({code})}}
                     onRunCode={this.runCode}
                     readOnly={this.props.readOnly}/>
                 <div style={chatWrapperStyle}>
