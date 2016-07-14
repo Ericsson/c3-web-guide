@@ -26,11 +26,13 @@ class ToCMenu extends React.Component {
                 <ul style={listStyle}>
                     <ListItem pageId=' '
                               pageTitle='Home'
-                              onClick={this.props.onListItemClicked}/>
+                              onClick={this.props.onListItemClicked}
+                              isCurrentPage={!window.location.hash}/>
                     {Object.keys(pages).map((pageId, index) =>
                         <ListItem key={index}
                                   pageId={pages[pageId].id}
                                   pageTitle={pages[pageId].title}
+                                  isCurrentPage={window.location.hash && pageId.split('page')[1] === this.props.currentPage}
                                   onClick={this.props.onListItemClicked}/>
                     )}
                 </ul>
@@ -52,7 +54,7 @@ class ListItem extends React.Component {
         const style = {
             padding: '10px 20px',
             boxSizing: 'border-box',
-            background: this.state.active ? '#fff' : lightGreyColor,
+            background: this.state.active || this.props.isCurrentPage ? '#fff' : lightGreyColor,
             display: 'inline-block',
             width: '100%',
             textDecoration: 'none',

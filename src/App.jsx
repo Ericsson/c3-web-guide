@@ -142,6 +142,7 @@ class App extends React.Component {
                 <GuideHeader onToggleToCMenu={this.toggleToCMenu}/>
                 <ToCMenu style={ToCMenuStyle}
                          pages={pages}
+                         currentPage={this.state.currentPage}
                          onListItemClicked={this.toggleToCMenu}/>
                 <Home style={homeStyle}
                       pages={pages}
