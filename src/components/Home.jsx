@@ -54,7 +54,7 @@ class Home extends React.Component {
                     <ul style={listStyle}>
                         {Object.keys(pages).map((pageId, index) =>
                             <li key={index} style={listItemStyle}>
-                                <a href={`#${pages[pageId].id}`} style={listItemTitleStyle}>
+                                <a href={`#${pageId}`} style={listItemTitleStyle}>
                                     {pages[pageId].title}
                                 </a>
                                 <p style={listItemDescriptionStyle}>

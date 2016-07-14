@@ -37,7 +37,7 @@ class PageSelector extends React.Component {
                     {'<'}
                 </button>
                 <span style={currentPageStyle}>
-                    {this.props.currentPage} / {this.props.numberOfPages}
+                    {this.props.currentPageNumber} / {this.props.numberOfPages}
                 </span>
                 <button
                     style={buttonStyle}

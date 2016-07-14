@@ -14,7 +14,7 @@ class App extends React.Component {
 
         this.state = {
             currentState: 'home',
-            currentPage: 1,
+            currentPage: 'installation',
             changingHash: false,
             showToCMenu: false
         };
@@ -28,17 +28,15 @@ class App extends React.Component {
     }
 
     handleRoute() {
-        const hash = window.location.hash.substring(1);
-        const currentPageKey = Object.keys(pages)
-            .find(page => pages[page].id === hash);
+        const pageId = window.location.hash.substring(1);
 
-        if(currentPageKey) {
+        if(pageId in pages) {
             this.setState({
                 currentState: 'guide',
-                currentPage: currentPageKey.split('page')[1]
+                currentPage: pageId
             });
-            document.title = `${pageTitle} - ${pages[currentPageKey].title}`;
-        } else if (hash) {
+            document.title = `${pageTitle} - ${pages[pageId].title}`;
+        } else if (pageId) {
             this.setState({
                 currentState: 'home',
                 changingHash: true
@@ -51,37 +49,40 @@ class App extends React.Component {
         }
     }
 
-    setCurrentPage(page) {
+    setCurrentPage(pageNumber) {
+        const pageId = Object.keys(pages).find(pageId => pages[pageId].pageNumber === pageNumber);
+
         this.setState({
-            currentPage: page,
+            currentPage: pageId,
             changingHash: true
         });
-        window.location.hash = pages[`page${page}`].id
-        document.title = `${pageTitle} - ${pages[`page${page}`].title}`;
+
+        window.location.hash = pageId;
+        document.title = `${pageTitle} - ${pages[pageId].title}`;
     }
 
     goToPrevPage() {
-        let currentPage = this.state.currentPage;
+        let pageNumber = pages[this.state.currentPage].pageNumber;
 
-        if(currentPage > 1) {
-            currentPage--;
+        if(pageNumber > 1) {
+            pageNumber--;
         } else {
-            currentPage = Object.keys(pages).length;
+            pageNumber = Object.keys(pages).length;
         }
 
-        this.setCurrentPage(currentPage);
+        this.setCurrentPage(pageNumber);
     }
 
     goToNextPage() {
-        let currentPage = this.state.currentPage;
+        let pageNumber = pages[this.state.currentPage].pageNumber;
 
-        if(currentPage < Object.keys(pages).length) {
-            currentPage++;
+        if(pageNumber < Object.keys(pages).length) {
+            pageNumber++;
         } else {
-            currentPage = 1;
+            pageNumber = 1;
         }
 
-        this.setCurrentPage(currentPage);
+        this.setCurrentPage(pageNumber);
     }
 
     componentWillMount() {

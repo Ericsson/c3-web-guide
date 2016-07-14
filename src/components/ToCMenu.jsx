@@ -29,7 +29,7 @@ class ToCMenu extends React.Component {
                               onClick={this.props.onListItemClicked}/>
                     {Object.keys(pages).map((pageId, index) =>
                         <ListItem key={index}
-                                  pageId={pages[pageId].id}
+                                  pageId={pageId}
                                   pageTitle={pages[pageId].title}
                                   onClick={this.props.onListItemClicked}/>
                     )}
