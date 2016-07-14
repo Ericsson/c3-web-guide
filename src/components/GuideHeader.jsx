@@ -1,7 +1,6 @@
 import React from 'react';
 import ToCMenuButton from './ToCMenuButton.jsx';
 import {defaultTextColor, defaultBorder, pageTitle, lightGreyColor} from '../constants.js';
-import ericssonGradient from '../ericsson_gradient.jpg';
 import ericssonLogo from '../ericsson_logo.svg';
 
 class GuideHeader extends React.Component {
@@ -36,7 +35,8 @@ class GuideHeader extends React.Component {
 
         const ericssonGradientStyle = {
             height: 4,
-            width: '101%'
+            width: '100%',
+            background: 'linear-gradient(to right,#a1c517 0,#009045 25%,#0082b6 50%,#151f77 75%,#db004f 100%)'
         };
 
         const ericssonLogoStyle = {
@@ -48,14 +48,14 @@ class GuideHeader extends React.Component {
         };
 
         return (
-            <div style={wrapperStyle}>
-                <img src={ericssonGradient} style={ericssonGradientStyle}/>
+            <header style={wrapperStyle}>
+                <div style={ericssonGradientStyle}/>
                 <img src={ericssonLogo} style={ericssonLogoStyle}/>
                 <h1 style={textStyle}>
                     <a style={linkStyle} href="#">{pageTitle}</a>
                 </h1>
                 <ToCMenuButton style={ToCMenuButtonStyle} onClick={this.props.onToggleToCMenu}/>
-            </div>
+            </header>
         );
     }
 }
