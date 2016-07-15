@@ -107,6 +107,7 @@ class Chat extends React.Component {
             <div ref={c => {this.videoArea = c}} style={chatStyle}>
                 <ChatHeader
                     clientId={this.props.clientId}
+                    userId={this.state.userId}
                     clientName={this.props.clientName}/>
                 <ChatMessageList
                     userId={this.state.userId}
@@ -138,7 +139,7 @@ class ChatHeader extends React.Component {
         };
 
         return (
-            <div style={style}>{this.props.clientName || this.props.clientId}</div>
+            <div style={style}>{this.props.clientName || this.props.userId || this.props.clientId}</div>
         );
     }
 }

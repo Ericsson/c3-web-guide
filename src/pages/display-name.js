@@ -4,5 +4,5 @@
 *   • client2 - Another client
 */
 
-client1.setName('Super awesome name');
-client2.setName('Another awesome name');
+client1.setName('Change me!');
+client2.setName('Mr. Bond');
