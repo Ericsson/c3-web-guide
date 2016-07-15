@@ -292,7 +292,8 @@ class VideoWindow extends React.Component {
             visibility: this.state.videoPlaying ? 'visible' : 'hidden',
             background: '#555',
             boxShadow: '0px 0px 15px rgba(50, 50, 50, 0.4)',
-            border: '1px solid rgba(50, 50, 50, 0.5)',
+            border: '1px solid #999',
+            overflow: 'hidden',
             borderRadius: 3
         };
 
