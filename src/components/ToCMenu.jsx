@@ -32,6 +32,7 @@ class ToCMenu extends React.Component {
                         <ListItem key={index}
                                   pageId={pageId}
                                   pageTitle={pages[pageId].title}
+                                  pageNumber={pages[pageId].pageNumber}
                                   onClick={this.props.onListItemClicked}
                                   isCurrentPage={this.props.currentState === 'guide' && this.props.currentPage === pageId}/>
                     )}
@@ -70,6 +71,7 @@ class ListItem extends React.Component {
                    onClick={this.props.onClick}
                    onMouseEnter={() => {this.setState({active: true})}}
                    onMouseLeave={() => {this.setState({active: false})}}>
+                    {this.props.pageNumber ? `${this.props.pageNumber}. ` : ''}
                     {this.props.pageTitle}
                 </a>
             </li>
