@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Codemirror from 'react-codemirror';
 import SimpleButton from './SimpleButton.jsx';
-import {defaultBorder} from '../constants.js';
+import {defaultBorder, lightGreyColor} from '../constants.js';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/mode/javascript/javascript';
@@ -45,7 +45,7 @@ class Codearea extends React.Component {
 
       const bottomBoxStyle = {
          height: 36,
-         background: '#f8f8f8',
+         background: lightGreyColor,
          border: defaultBorder,
          display: this.props.readOnly ? 'none' : 'block'
       };

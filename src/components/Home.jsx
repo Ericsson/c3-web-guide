@@ -1,6 +1,6 @@
 import React from 'react';
 import Markdown from './Markdown.jsx';
-import {defaultTextColor, defaultBorder} from '../constants.js'
+import {defaultTextColor, defaultBorder, lightGreyColor} from '../constants.js'
 
 class Home extends React.Component {
     render() {
@@ -28,7 +28,7 @@ class Home extends React.Component {
             border: defaultBorder,
             borderRadius: 3,
             padding: 20,
-            background: '#fafafa',
+            background: lightGreyColor,
             marginTop: 10,
             marginBottom: 10
         };

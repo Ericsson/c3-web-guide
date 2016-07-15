@@ -1,5 +1,5 @@
 import React from 'react';
-import {defaultBorder, defaultTextColor} from '../constants.js';
+import {defaultBorder, defaultTextColor, lightGreyColor} from '../constants.js';
 
 class PageSelector extends React.Component {
     render() {
@@ -9,6 +9,7 @@ class PageSelector extends React.Component {
             justifyContent: 'center',
             alignItems: 'center',
             height: 50,
+            background: lightGreyColor
         };
 
         const currentPageStyle = {

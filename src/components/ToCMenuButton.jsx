@@ -16,7 +16,7 @@ class ToCMenuButton extends React.Component {
             border: 'none',
             outline: 'none',
             cursor: 'pointer',
-            color: this.state.buttonHover ? '#999' : defaultTextColor,
+            color: this.state.buttonHover ? '#777' : defaultTextColor,
             padding: 0,
             fontSize: 30
         };
