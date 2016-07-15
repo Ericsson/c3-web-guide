@@ -24,6 +24,26 @@ class Home extends React.Component {
             padding: 0
         };
 
+        return (
+            <div style={wrapperStyle}>
+                <div style={style}>
+                    <Markdown src='home.md'/>
+                    <ul style={listStyle}>
+                        {Object.keys(pages).map((pageId, index) =>
+                            <ListItem key={index}
+                                      href={`#${pageId}`}
+                                      title={pages[pageId].title}
+                                      description={pages[pageId].description}/>
+                        )}
+                    </ul>
+                </div>
+            </div>
+        );
+    }
+}
+
+class ListItem extends React.Component {
+    render() {
         const listItemStyle = {
             border: defaultBorder,
             borderRadius: 3,
@@ -48,23 +68,14 @@ class Home extends React.Component {
         };
 
         return (
-            <div style={wrapperStyle}>
-                <div style={style}>
-                    <Markdown src='home.md'/>
-                    <ul style={listStyle}>
-                        {Object.keys(pages).map((pageId, index) =>
-                            <li key={index} style={listItemStyle}>
-                                <a href={`#${pageId}`} style={listItemTitleStyle}>
-                                    {pages[pageId].title}
-                                </a>
-                                <p style={listItemDescriptionStyle}>
-                                    {pages[pageId].description}
-                                </p>
-                            </li>
-                        )}
-                    </ul>
-                </div>
-            </div>
+            <li style={listItemStyle}>
+                <a href={this.props.href} style={listItemTitleStyle}>
+                    {this.props.title}
+                </a>
+                <p style={listItemDescriptionStyle}>
+                    {this.props.description}
+                </p>
+            </li>
         );
     }
 }
