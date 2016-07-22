@@ -101,15 +101,12 @@ class App extends React.Component {
     }
 
     toggleToCMenu() {
-        const homeNode = ReactDOM.findDOMNode(this.home);
-        const guideNode = ReactDOM.findDOMNode(this.guide);
-
         if(this.state.showToCMenu) {
-            homeNode.removeEventListener('click', this.clickHandler);
-            guideNode.removeEventListener('click', this.clickHandler);
+            this.homeNode.removeEventListener('click', this.clickHandler);
+            this.guideNode.removeEventListener('click', this.clickHandler);
         } else {
-            homeNode.addEventListener('click', this.clickHandler);
-            guideNode.addEventListener('click', this.clickHandler);
+            this.homeNode.addEventListener('click', this.clickHandler);
+            this.guideNode.addEventListener('click', this.clickHandler);
         }
 
         this.setState({showToCMenu: !this.state.showToCMenu});
@@ -134,13 +131,15 @@ class App extends React.Component {
 
         const ToCMenuStyle = {
             position: 'absolute',
+            top: this.headerNode && this.headerNode.offsetHeight,
             transform: `translateX(${this.state.showToCMenu ? '0' : '-100%'})`,
             transition: 'transform 0.15s'
         };
 
         return (
             <div style={wrapperStyle}>
-                <GuideHeader onToggleToCMenu={this.toggleToCMenu}/>
+                <GuideHeader onToggleToCMenu={this.toggleToCMenu}
+                             ref={node => {this.headerNode = ReactDOM.findDOMNode(node)}}/>
                 <ToCMenu style={ToCMenuStyle}
                          pages={pages}
                          currentState={this.state.currentState}
@@ -148,14 +147,14 @@ class App extends React.Component {
                          onListItemClicked={this.toggleToCMenu}/>
                 <Home style={homeStyle}
                       pages={pages}
-                      ref={node => {this.home = node}}/>
+                      ref={node => {this.homeNode = ReactDOM.findDOMNode(node)}}/>
                 <Guide style={guideStyle}
                        pages={pages}
                        currentPage={this.state.currentPage}
                        onGoToPrevPage={this.goToPrevPage}
                        onGoToNextPage={this.goToNextPage}
                        serverUrl={serverUrl}
-                       ref={node => {this.guide = node}}/>
+                       ref={node => {this.guideNode = ReactDOM.findDOMNode(node)}}/>
             </div>
         );
     }
