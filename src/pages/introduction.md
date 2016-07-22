@@ -1,7 +1,9 @@
 ## Introduction
 Welcome to the C3 Web Guide.
 
-This guide is guide is divided into different parts which you can access by clicking C3 Web Guide on the top of the page. You can also view the table of contents by pressing the menu button on the top left of the page.
+The goal of this guide is to create a simple chat app with messaging and video calling.
+
+the guide is guide is divided into different parts which you can access by clicking C3 Web Guide on the top of the page. You can also view the table of contents by pressing the menu button on the top left of the page.
 
 Throughout the guide you will find a series of slides and interactive demos which will showcase the C3 Web SDK and its applications. You can navigate through them by pressing the `<` and `>` buttons on the bottom of the page.
 
