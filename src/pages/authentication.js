@@ -1,4 +1,4 @@
-// Registering and authenticating a user:
+// Register and authenticate a user:
 cct.Auth.registerWithPassword({
     username: 'exampleName',
     password: 'examplePassword',
@@ -9,7 +9,7 @@ cct.Auth.registerWithPassword({
     console.log('Client registered and authenticated with user id: ' + client.user.id);
 })
 
-// Logging in and authenticating an existing user:
+// Log in and authenticate an existing user:
 cct.Auth.loginWithPassword({
     username: 'exampleName',
     password: 'examplePassword',
