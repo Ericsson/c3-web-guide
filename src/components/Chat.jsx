@@ -108,7 +108,7 @@ class Chat extends React.Component {
                 <ChatHeader
                     clientId={this.props.clientId}
                     userId={this.state.userId}
-                    clientName={this.props.clientName}/>
+                    userName={this.props.userName}/>
                 <ChatMessageList
                     userId={this.state.userId}
                     messages={this.state.messages}/>
@@ -127,19 +127,42 @@ class Chat extends React.Component {
 class ChatHeader extends React.Component {
     render() {
         const style = {
-            textAlign: 'center',
             borderBottom: defaultBorder,
-            padding: 5,
-            fontWeight: 'bold',
             color: defaultTextColor,
+            background: lightGreyColor,
+            display: 'flex',
+            alignItems: 'center',
+            height: 30
+        };
+
+        const clientIdStyle = {
+            borderRight: defaultBorder,
+            background: '#f0f0f0',
+            color: '#b3b3b3',
+            fontSize: 12,
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0 5px 0 5px',
+            height: 'inherit'
+        };
+
+        const userNameStyle = {
+            fontWeight: 'bold',
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            background: lightGreyColor
+            padding: '0 10px 0 10px'
         };
 
         return (
-            <div style={style}>{this.props.clientName || this.props.userId || this.props.clientId}</div>
+            <div style={style}>
+                <span style={clientIdStyle}>
+                    {this.props.clientId}
+                </span>
+                <span style={userNameStyle}>
+                    {this.props.userName || this.props.userId}
+                </span>
+            </div>
         );
     }
 }
