@@ -128,39 +128,35 @@ class ChatHeader extends React.Component {
     render() {
         const style = {
             borderBottom: defaultBorder,
-            color: defaultTextColor,
             background: lightGreyColor,
             display: 'flex',
             alignItems: 'center',
-            height: 30
-        };
-
-        const clientIdStyle = {
-            borderRight: defaultBorder,
-            background: '#f0f0f0',
-            color: '#b3b3b3',
-            fontSize: 12,
-            display: 'flex',
-            alignItems: 'center',
-            padding: '0 5px 0 5px',
-            height: 'inherit'
+            height: 30,
+            padding: '0 5px 0 5px'
         };
 
         const userNameStyle = {
+            color: defaultTextColor,
             fontWeight: 'bold',
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            padding: '0 10px 0 10px'
+            flex: '1',
+            marginRight: 5
+        };
+
+        const clientIdStyle = {
+            color: '#b3b3b3',
+            fontSize: 12
         };
 
         return (
             <div style={style}>
-                <span style={clientIdStyle}>
-                    {this.props.clientId}
-                </span>
                 <span style={userNameStyle}>
                     {this.props.userName || this.props.userId}
+                </span>
+                <span style={clientIdStyle}>
+                    {this.props.clientId}
                 </span>
             </div>
         );
