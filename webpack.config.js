@@ -45,7 +45,8 @@ var config = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'C3 Web Guide'
+            title: 'C3 Web Guide',
+            favicon: 'favicon.ico'
         }),
         new webpack.DefinePlugin({
             'process.env': {

@@ -1,50 +1,66 @@
 {
-    "page1": {
+    "introduction": {
+        "pageNumber": 1,
         "title": "Introduction",
-        "id": "introduction",
-        "description": "Learn how to use the guide and how to create a client.",
-        "file": "pages/page1.md",
-        "code": "pages/page1.js",
+        "description": "Learn how to use and navigate the guide.",
+        "text": "pages/introduction.md",
+        "code": "pages/introduction.js",
         "readOnly": true
     },
-    "page2": {
+    "installation": {
+        "pageNumber": 2,
+        "title": "Installation",
+        "description": "Learn how to include the C3 Web SDK in your app.",
+        "text": "pages/installation.md",
+        "code": "pages/installation.js",
+        "readOnly": true
+    },
+    "clients": {
+        "pageNumber": 3,
+        "title": "Clients",
+        "description": "Learn what a client is and how to create one.",
+        "text": "pages/clients.md",
+        "code": "pages/clients.js",
+        "readOnly": true
+    },
+    "authentication": {
+        "pageNumber": 4,
         "title": "Authentication",
-        "id": "authentication",
         "description": "Learn how to register and login users, and how to authenticate them.",
-        "file": "pages/page2.md",
-        "code": "pages/page2.js",
+        "text": "pages/authentication.md",
+        "code": "pages/authentication.js",
         "readOnly": true
     },
-    "page3": {
+    "display-name": {
+        "pageNumber": 5,
         "title": "Display name",
-        "id": "display-name",
         "description": "Learn how to change the display name of a user.",
-        "file": "pages/page3.md",
-        "code": "pages/page3.js",
+        "text": "pages/display-name.md",
+        "code": "pages/display-name.js",
         "readOnly": false
     },
-    "page4": {
+    "rooms": {
+        "pageNumber": 6,
         "title": "Rooms",
-        "id": "rooms",
         "description": "Learn how to create a room and invite users to it.",
-        "file": "pages/page4.md",
-        "code": "pages/page4.js",
+        "text": "pages/rooms.md",
+        "code": "pages/rooms.js",
         "readOnly": true
     },
-    "page5": {
+    "messaging": {
+        "pageNumber": 7,
         "title": "Messaging",
-        "id": "messaging",
         "description": "Learn how to send messages to users within a room.",
-        "file": "pages/page5.md",
-        "code": "pages/page5.js",
+        "text": "pages/messaging.md",
+        "code": "pages/messaging.js",
         "readOnly": false
     },
-    "page6": {
+    "webrtc": {
+        "pageNumber": 8,
         "title": "WebRTC",
-        "id": "webrtc",
         "description": "Learn how to setup a WebRTC video call between users within a room.",
-        "file": "pages/page6.md",
-        "code": "pages/page6.js",
+        "text": "pages/webrtc.md",
+        "code": "pages/webrtc.js",
         "readOnly": false
     }
 }

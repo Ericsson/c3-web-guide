@@ -107,7 +107,8 @@ class Chat extends React.Component {
             <div ref={c => {this.videoArea = c}} style={chatStyle}>
                 <ChatHeader
                     clientId={this.props.clientId}
-                    clientName={this.props.clientName}/>
+                    userId={this.state.userId}
+                    userName={this.props.userName}/>
                 <ChatMessageList
                     userId={this.state.userId}
                     messages={this.state.messages}/>
@@ -126,19 +127,38 @@ class Chat extends React.Component {
 class ChatHeader extends React.Component {
     render() {
         const style = {
-            textAlign: 'center',
             borderBottom: defaultBorder,
-            padding: 5,
-            fontWeight: 'bold',
+            background: lightGreyColor,
+            display: 'flex',
+            alignItems: 'center',
+            height: 30,
+            padding: '0 5px 0 5px'
+        };
+
+        const userNameStyle = {
             color: defaultTextColor,
+            fontWeight: 'bold',
             overflow: 'hidden',
             whiteSpace: 'nowrap',
             textOverflow: 'ellipsis',
-            background: lightGreyColor
+            flex: '1',
+            marginRight: 5
+        };
+
+        const clientIdStyle = {
+            color: '#b3b3b3',
+            fontSize: 12
         };
 
         return (
-            <div style={style}>{this.props.clientName || this.props.clientId}</div>
+            <div style={style}>
+                <span style={userNameStyle}>
+                    {this.props.userName || this.props.userId}
+                </span>
+                <span style={clientIdStyle}>
+                    {this.props.clientId}
+                </span>
+            </div>
         );
     }
 }
@@ -292,7 +312,8 @@ class VideoWindow extends React.Component {
             visibility: this.state.videoPlaying ? 'visible' : 'hidden',
             background: '#555',
             boxShadow: '0px 0px 15px rgba(50, 50, 50, 0.4)',
-            border: '1px solid rgba(50, 50, 50, 0.5)',
+            border: '1px solid #999',
+            overflow: 'hidden',
             borderRadius: 3
         };
 

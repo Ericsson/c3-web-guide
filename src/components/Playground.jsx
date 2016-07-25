@@ -93,7 +93,7 @@ class Playground extends React.Component {
                     style={codeareaStyle}
                     code={this.state.code}
                     onResetCode={() => {this.setState({code: this.props.code})}}
-                    onUpdateCode={(code) => {this.setState({code})}}
+                    onUpdateCode={code => {this.setState({code})}}
                     onRunCode={this.runCode}
                     readOnly={this.props.readOnly}/>
                 <div style={chatWrapperStyle}>
@@ -101,13 +101,13 @@ class Playground extends React.Component {
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client1Id}
-                        clientName={this.state[this.props.client1Id + 'Name']}
+                        userName={this.state[this.props.client1Id + 'Name']}
                         onClientAuthenticated={this.handleClientAuthenticated}/>
                     <Chat
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client2Id}
-                        clientName={this.state[this.props.client2Id + 'Name']}
+                        userName={this.state[this.props.client2Id + 'Name']}
                         onClientAuthenticated={this.handleClientAuthenticated}/>
                 </div>
                 <LoadingOverlay loading={this.state.loading}/>
