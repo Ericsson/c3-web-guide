@@ -1,7 +1,9 @@
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+
 var config = {
     entry: './index.jsx',
     output: {
-        path: './dist',
+        path: 'dist',
         filename: 'bundle.js'
     },
     devServer: {
@@ -38,7 +40,10 @@ var config = {
                 ]
             }
         ]
-    }
+    },
+    plugins: [new HtmlWebpackPlugin({
+        title: 'C3 Web Guide'
+    })]
 };
 
 module.exports = config;
