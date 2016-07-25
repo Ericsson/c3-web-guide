@@ -1,3 +1,4 @@
+var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var config = {
@@ -41,9 +42,16 @@ var config = {
             }
         ]
     },
-    plugins: [new HtmlWebpackPlugin({
-        title: 'C3 Web Guide'
-    })]
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: 'C3 Web Guide'
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify('production')
+            }
+        })
+    ]
 };
 
 module.exports = config;
