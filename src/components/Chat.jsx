@@ -23,6 +23,7 @@ class Chat extends React.Component {
         this.videoNodeCreated = this.videoNodeCreated.bind(this);
         this.startMoveVideoWindow = this.startMoveVideoWindow.bind(this);
         this.moveVideoWindow = this.moveVideoWindow.bind(this);
+        this.startCall = this.startCall.bind(this);
     }
 
     componentDidMount() {
@@ -78,7 +79,6 @@ class Chat extends React.Component {
             y: e.clientY - videoRect.top
         };
 
-
         const handleMouseMove = function(e) {
             window.getSelection().removeAllRanges();
             this.moveVideoWindow(e, videoRect, videoArea, startPos);
@@ -91,6 +91,11 @@ class Chat extends React.Component {
 
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    startCall() {
+        window[this.props.clientId + 'StartCall']();
+        this.props.onCallStarted();
     }
 
     render() {
@@ -114,11 +119,14 @@ class Chat extends React.Component {
                     messages={this.state.messages}/>
                 <ChatInput
                     onSendMessage={window[this.props.clientId + 'SendMessage']}
-                    onStartCall={window[this.props.clientId + 'StartCall']}/>
+                    onStartCall={this.startCall}
+                    ongoingCall={this.props.ongoingCall}/>
                 <VideoWindow
                     onVideoWindowCreated={videoWindow => {this.videoWindow = videoWindow}}
                     onVideoNodeCreated={this.videoNodeCreated}
-                    onStartMoveVideoWindow={this.startMoveVideoWindow}/>
+                    onStartMoveVideoWindow={this.startMoveVideoWindow}
+                    onEndCallButtonClicked={this.props.onEndCall}
+                    ongoingCall={this.props.ongoingCall}/>
             </div>
         );
     }
@@ -256,7 +264,10 @@ class ChatInput extends React.Component {
 
         return (
             <div style={wrapperStyle}>
-                <SimpleButton onClick={this.props.onStartCall}>Video call</SimpleButton>
+                <SimpleButton onClick={this.props.onStartCall}
+                              disabled={this.props.ongoingCall}>
+                    Video call
+                </SimpleButton>
                 <form style={formStyle} onSubmit={this.handleSendMessage}>
                     <input
                         style={inputStyle}
@@ -271,36 +282,6 @@ class ChatInput extends React.Component {
 }
 
 class VideoWindow extends React.Component {
-    constructor() {
-        super();
-
-        this.state = {
-            videoPlaying: false
-        };
-
-        this.videoWindowCreated = this.videoWindowCreated.bind(this);
-        this.videoNodeCreated = this.videoNodeCreated.bind(this);
-    }
-
-    videoWindowCreated(videoWindow) {
-        // SAFARI
-        const observer = new MutationObserver(() => {
-            this.setState({videoPlaying: true});
-        });
-        observer.observe(videoWindow, {childList: true})
-
-        this.props.onVideoWindowCreated(videoWindow);
-    }
-
-    videoNodeCreated(videoNode) {
-        // CHROME AND FIREFOX
-        videoNode.addEventListener('playing', () => {
-            this.setState({videoPlaying: true});
-        })
-
-        this.props.onVideoNodeCreated(videoNode);
-    }
-
     render() {
         const wrapperStyle = {
             position: 'absolute',
@@ -309,7 +290,7 @@ class VideoWindow extends React.Component {
             width: 125,
             maxWidth: '50%',
             cursor: 'move',
-            visibility: this.state.videoPlaying ? 'visible' : 'hidden',
+            display: this.props.ongoingCall ? 'inline-block' : 'none',
             background: '#555',
             boxShadow: '0px 0px 15px rgba(50, 50, 50, 0.4)',
             border: '1px solid #999',
@@ -320,17 +301,60 @@ class VideoWindow extends React.Component {
         const videoStyle = {
             width: '100%',
             display: 'block'
-        }
+        };
+
+        const endCallButtonStyle = {
+            position: 'absolute',
+            bottom: '7%',
+            left: '50%',
+            transform: 'translateX(-50%)'
+        };
 
         return (
             <div style={wrapperStyle}
                  onMouseDown={this.props.onStartMoveVideoWindow}
-                 ref={this.videoWindowCreated}>
+                 ref={this.props.onVideoWindowCreated}>
                 <video autoPlay
                        style={videoStyle}
-                       ref={this.videoNodeCreated}>
+                       ref={this.props.onVideoNodeCreated}>
                 </video>
+                <EndCallButton style={endCallButtonStyle}
+                               onClick={this.props.onEndCallButtonClicked}/>
             </div>
+        );
+    }
+}
+
+class EndCallButton extends React.Component {
+    constructor() {
+        super();
+
+        this.state = {
+            buttonHover: false,
+            buttonActive: false
+        };
+    }
+
+    render() {
+        const style = {
+            border: '1px solid #AE1828',
+            borderRadius: 2,
+            background: this.state.buttonHover ? this.state.buttonActive ? '#E31D33' : '#F31E35' : '#FC3A46',
+            color: '#fff',
+            outline: 'none',
+            cursor: 'pointer'
+        };
+        Object.assign(style, this.props.style);
+
+        return (
+            <button onClick={this.props.onClick}
+                    style={style}
+                    onMouseEnter={() => {this.setState({buttonHover: true})}}
+                    onMouseLeave={() => {this.setState({buttonHover: false})}}
+                    onMouseDown={() => {this.setState({buttonActive: true})}}
+                    onMouseUp={() => {this.setState({buttonActive: false})}}>
+                End call
+            </button>
         );
     }
 }

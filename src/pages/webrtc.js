@@ -30,7 +30,7 @@ client1StartCall = function() {
     call.setLocalSource('id', localMedia);
     var remoteMedia = call.getRemoteSource('id');
     remoteMedia.sink = client1VideoNode;
-}
+};
 
 client2StartCall = function() {
     var call = client2Room.startCall(client2Room.otherMembers[0]);
@@ -38,4 +38,4 @@ client2StartCall = function() {
     call.setLocalSource('id', localMedia);
     var remoteMedia = call.getRemoteSource('id');
     remoteMedia.sink = client2VideoNode;
-}
+};

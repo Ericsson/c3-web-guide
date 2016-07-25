@@ -28,8 +28,8 @@ class SimpleButton extends React.Component {
             border: 'none',
             outline: 'none',
             userSelect: 'none',
-            color: defaultTextColor,
-            cursor: 'pointer'
+            color: this.props.disabled ? '#999' : defaultTextColor,
+            cursor: this.props.disabled ? 'initial' : 'pointer'
         };
         Object.assign(style, this.props.style);
 
@@ -38,6 +38,7 @@ class SimpleButton extends React.Component {
                 style={style}
                 onClick={this.props.onClick}
                 type={this.props.type || 'button'}
+                disabled={this.props.disabled}
                 onMouseEnter={this.buttonStartHover}
                 onMouseLeave={this.buttonStopHover}
                 onMouseDown={this.buttonStartClick}
