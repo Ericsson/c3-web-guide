@@ -1,4 +1,8 @@
+var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+
 var config = {
+    devtool: 'cheap-module-source-map',
     entry: './index.jsx',
     output: {
         path: './dist',
@@ -38,7 +42,17 @@ var config = {
                 ]
             }
         ]
-    }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: 'C3 Web Guide'
+        }),
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify('production')
+            }
+        })
+    ]
 };
 
 module.exports = config;
