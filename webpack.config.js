@@ -2,9 +2,10 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var config = {
+    devtool: 'cheap-module-source-map',
     entry: './index.jsx',
     output: {
-        path: 'dist',
+        path: './dist',
         filename: 'bundle.js'
     },
     devServer: {
