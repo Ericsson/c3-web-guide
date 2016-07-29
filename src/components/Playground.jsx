@@ -5,13 +5,27 @@ import LoadingOverlay from './LoadingOverlay.jsx';
 import * as cct from '@cct/libcct';
 
 const injections = {
-    setName: 'var stateObj = {}; stateObj[caller + "Name"] = response; self.setState(stateObj);'
+    setName: {
+        type: 'promise',
+        code: 'var stateObj = {}; stateObj[caller + "Name"] = response; self.setState(stateObj);'
+    },
+    startCall: {
+        type: 'function',
+        objName: 'Call'
+    }
 };
 
 function injectCode(code) {
-    for(const functionName in injections) {
-        const pattern = new RegExp(`\(\\b\\w+\)\\.${functionName}\\(.*?\\)`, 'g');
-        code = code.replace(pattern, `$&.then(function(response) {var caller = '$1'; ${injections[functionName]} return response;})`);
+    for(const injection in injections) {
+        const pattern = new RegExp(`\(\\b\\w+\)\\.${injection}\\(.*?\\)`, 'g');
+        switch(injections[injection].type) {
+            case 'promise':
+                code = code.replace(pattern, `$&.then(function(response) {var caller = '$1'; ${injections[injection].code} return response;})`);
+                break;
+            case 'function':
+                code = code.replace(pattern, `window.$1${injections[injection].objName} = $&`);
+                break;
+        }
     }
     return code;
 }
@@ -23,7 +37,8 @@ class Playground extends React.Component {
         this.state = {
             loading: true,
             authenticatedClients: {},
-            code: this.props.code
+            code: this.props.code,
+            ongoingCall: false
         };
 
         this.state.authenticatedClients[this.props.client1Id] = false;
@@ -31,6 +46,7 @@ class Playground extends React.Component {
 
         this.handleClientAuthenticated = this.handleClientAuthenticated.bind(this);
         this.runCode = this.runCode.bind(this);
+        this.endCall = this.endCall.bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -64,6 +80,13 @@ class Playground extends React.Component {
         code = injectCode(code);
         eval(code);
         this.forceUpdate();
+    }
+
+    endCall() {
+        const callerClientId = Object.keys(this.state.authenticatedClients).find(key => window[key + 'RoomCall']);
+        window[callerClientId + 'RoomCall'].hangup();
+        window[callerClientId + 'RoomCall'] = null;
+        this.setState({ongoingCall: false})
     }
 
     render() {
@@ -102,13 +125,19 @@ class Playground extends React.Component {
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client1Id}
                         userName={this.state[this.props.client1Id + 'Name']}
-                        onClientAuthenticated={this.handleClientAuthenticated}/>
+                        onClientAuthenticated={this.handleClientAuthenticated}
+                        onCallStarted={() => {this.setState({ongoingCall: true})}}
+                        onEndCall={this.endCall}
+                        ongoingCall={this.state.ongoingCall}/>
                     <Chat
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client2Id}
                         userName={this.state[this.props.client2Id + 'Name']}
-                        onClientAuthenticated={this.handleClientAuthenticated}/>
+                        onClientAuthenticated={this.handleClientAuthenticated}
+                        onCallStarted={() => {this.setState({ongoingCall: true})}}
+                        onEndCall={this.endCall}
+                        ongoingCall={this.state.ongoingCall}/>
                 </div>
                 <LoadingOverlay loading={this.state.loading}/>
             </div>
