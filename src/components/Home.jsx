@@ -33,7 +33,8 @@ class Home extends React.Component {
                             <ListItem key={index}
                                       href={`#${pageId}`}
                                       title={pages[pageId].title}
-                                      description={pages[pageId].description}/>
+                                      description={pages[pageId].description}
+                                      pageNumber={pages[pageId].pageNumber}/>
                         )}
                     </ul>
                 </div>
@@ -70,7 +71,7 @@ class ListItem extends React.Component {
         return (
             <li style={listItemStyle}>
                 <a href={this.props.href} style={listItemTitleStyle}>
-                    {this.props.title}
+                    {this.props.pageNumber}. {this.props.title}
                 </a>
                 <p style={listItemDescriptionStyle}>
                     {this.props.description}
