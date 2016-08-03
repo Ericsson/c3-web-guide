@@ -6,16 +6,6 @@ import * as cct from '@cct/libcct';
 
 const injections = [
     {
-        pattern: /(\b\w+)\.setName\(.*?\)/g,
-        replacement:
-            `$&.then(function(response) {
-                var stateObj = {};
-                stateObj['$1' + "Name"] = response;
-                self.setState(stateObj);
-                return response;
-            })`
-    },
-    {
         pattern: /(\b\w+)\.startCall\(.*?\)/g,
         replacement: 'window.$1Call = $&'
     },
@@ -137,7 +127,6 @@ class Playground extends React.Component {
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client1Id}
-                        userName={this.state[this.props.client1Id + 'Name']}
                         onClientAuthenticated={this.handleClientAuthenticated}
                         onCallStarted={() => {this.setState({ongoingCall: true})}}
                         onEndCall={this.endCall}
@@ -146,7 +135,6 @@ class Playground extends React.Component {
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client2Id}
-                        userName={this.state[this.props.client2Id + 'Name']}
                         onClientAuthenticated={this.handleClientAuthenticated}
                         onCallStarted={() => {this.setState({ongoingCall: true})}}
                         onEndCall={this.endCall}
