@@ -8,7 +8,7 @@ import Resizer from './Resizer.jsx';
 class Guide extends React.Component {
     render() {
         const pages = this.props.pages;
-        const currentPage = this.props.currentPage;
+        const currentPageIndex = this.props.currentPageIndex;
 
         const wrapperStyle = {
             display: 'flex'
@@ -38,18 +38,18 @@ class Guide extends React.Component {
                 <div style={guidePageWrapperStyle}>
                     <Markdown
                         style={markdownStyle}
-                        src={pages[currentPage].text}/>
+                        src={pages[currentPageIndex].text}/>
                     <PageSelector
-                        numberOfPages={Object.keys(pages).length}
-                        currentPageNumber={pages[currentPage].pageNumber}
+                        numberOfPages={pages.length}
+                        currentPageNumber={currentPageIndex + 1}
                         onGoToPrevPage={this.props.onGoToPrevPage}
                         onGoToNextPage={this.props.onGoToNextPage}/>
                 </div>
                 <Resizer elementMinSize={200}/>
                 <Playground
                     style={playgroundStyle}
-                    code={require(`raw!../${pages[currentPage].code}`)}
-                    readOnly={pages[currentPage].readOnly}
+                    code={require(`raw!../${pages[currentPageIndex].code}`)}
+                    readOnly={pages[currentPageIndex].readOnly}
                     serverUrl={this.props.serverUrl}/>
             </div>
         );

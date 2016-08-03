@@ -14,13 +14,13 @@ class App extends React.Component {
 
         this.state = {
             currentState: 'home',
-            currentPage: 'installation',
+            currentPageIndex: 0,
             changingHash: false,
             showToCMenu: false
         };
 
         this.handleRoute = this.handleRoute.bind(this);
-        this.setCurrentPage = this.setCurrentPage.bind(this);
+        this.setCurrentPageIndex = this.setCurrentPageIndex.bind(this);
         this.goToPrevPage = this.goToPrevPage.bind(this);
         this.goToNextPage = this.goToNextPage.bind(this);
         this.clickHandler = this.clickHandler.bind(this);
@@ -29,13 +29,14 @@ class App extends React.Component {
 
     handleRoute() {
         const pageId = window.location.hash.substring(1);
+        const pageIndex = pages.findIndex(page => page.pageId === pageId);
 
-        if(pageId in pages) {
+        if(pageIndex >= 0) {
             this.setState({
                 currentState: 'guide',
-                currentPage: pageId
+                currentPageIndex: pageIndex
             });
-            document.title = `${pageTitle} - ${pages[pageId].title}`;
+            document.title = `${pageTitle} - ${pages[pageIndex].title}`;
         } else if (pageId) {
             this.setState({
                 currentState: 'home',
@@ -49,40 +50,38 @@ class App extends React.Component {
         }
     }
 
-    setCurrentPage(pageNumber) {
-        const pageId = Object.keys(pages).find(pageId => pages[pageId].pageNumber === pageNumber);
-
+    setCurrentPageIndex(pageIndex) {
         this.setState({
-            currentPage: pageId,
+            currentPageIndex: pageIndex,
             changingHash: true
         });
 
-        window.location.hash = pageId;
-        document.title = `${pageTitle} - ${pages[pageId].title}`;
+        window.location.hash = pages[pageIndex].pageId;
+        document.title = `${pageTitle} - ${pages[pageIndex].title}`;
     }
 
     goToPrevPage() {
-        let pageNumber = pages[this.state.currentPage].pageNumber;
+        let pageIndex = this.state.currentPageIndex;
 
-        if(pageNumber > 1) {
-            pageNumber--;
+        if(pageIndex > 0) {
+            pageIndex--;
         } else {
-            pageNumber = Object.keys(pages).length;
+            pageIndex = pages.length - 1;
         }
 
-        this.setCurrentPage(pageNumber);
+        this.setCurrentPageIndex(pageIndex);
     }
 
     goToNextPage() {
-        let pageNumber = pages[this.state.currentPage].pageNumber;
+        let pageIndex = this.state.currentPageIndex;
 
-        if(pageNumber < Object.keys(pages).length) {
-            pageNumber++;
+        if(pageIndex < pages.length - 1) {
+            pageIndex++;
         } else {
-            pageNumber = 1;
+            pageIndex = 0;
         }
 
-        this.setCurrentPage(pageNumber);
+        this.setCurrentPageIndex(pageIndex);
     }
 
     componentWillMount() {
@@ -143,14 +142,14 @@ class App extends React.Component {
                 <ToCMenu style={ToCMenuStyle}
                          pages={pages}
                          currentState={this.state.currentState}
-                         currentPage={this.state.currentPage}
+                         currentPageIndex={this.state.currentPageIndex}
                          onListItemClicked={this.toggleToCMenu}/>
                 <Home style={homeStyle}
                       pages={pages}
                       ref={node => {this.homeNode = ReactDOM.findDOMNode(node)}}/>
                 <Guide style={guideStyle}
                        pages={pages}
-                       currentPage={this.state.currentPage}
+                       currentPageIndex={this.state.currentPageIndex}
                        onGoToPrevPage={this.goToPrevPage}
                        onGoToNextPage={this.goToNextPage}
                        serverUrl={serverUrl}
