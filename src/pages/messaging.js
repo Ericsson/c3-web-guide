@@ -8,7 +8,7 @@
 *   • client2Messages - Same as above but for the second client
 */
 
-client1Room.on('event:m.room.message', function(event) {
+client1Room.on('event:m.room.message', function (event) {
     var message = {
         authorId: event.sender.id,
         text: event.content.body,
@@ -17,7 +17,7 @@ client1Room.on('event:m.room.message', function(event) {
     client1Messages.push(message);
 });
 
-client2Room.on('event:m.room.message', function(event) {
+client2Room.on('event:m.room.message', function (event) {
     var message = {
         authorId: event.sender.id,
         text: event.content.body,
@@ -26,14 +26,14 @@ client2Room.on('event:m.room.message', function(event) {
     client2Messages.push(message);
 });
 
-client1SendMessage = function(message) {
+client1SendMessage = function (message) {
     client1Room.send('m.room.message', {
         msgtype: 'm.text',
         body: message
     });
 };
 
-client2SendMessage = function(message) {
+client2SendMessage = function (message) {
     client2Room.send('m.room.message', {
         msgtype: 'm.text',
         body: message

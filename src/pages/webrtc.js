@@ -10,21 +10,21 @@
 *   • client2StartCall - Same as above but for the second client
 */
 
-client1.on('call', function(call) {
+client1.on('call', function (call) {
     var localMedia = new cct.DeviceSource();
     call.start();
     call.setLocalSource('id', localMedia);
     call.getRemoteSource('id').sink = client1VideoNode;
 });
 
-client2.on('call', function(call) {
+client2.on('call', function (call) {
     var localMedia = new cct.DeviceSource();
     call.start();
     call.setLocalSource('id', localMedia);
     call.getRemoteSource('id').sink = client2VideoNode;
 });
 
-client1StartCall = function() {
+client1StartCall = function () {
     var call = client1Room.startCall(client1Room.otherMembers[0]);
     var localMedia = new cct.DeviceSource();
     call.setLocalSource('id', localMedia);
@@ -32,7 +32,7 @@ client1StartCall = function() {
     remoteMedia.sink = client1VideoNode;
 };
 
-client2StartCall = function() {
+client2StartCall = function () {
     var call = client2Room.startCall(client2Room.otherMembers[0]);
     var localMedia = new cct.DeviceSource();
     call.setLocalSource('id', localMedia);
