@@ -1,5 +1,5 @@
 ## Rooms
-The communication is built around a room metaphor. Every user can participate in any number of rooms. They are the central component that connect users together, and where all direct communication takes place.
+The communication is built around a room metaphor. Every user can participate in any number of rooms. They are the central component that connects users together, and where all direct communication takes place.
 
 Rooms have a lot of different properties that can be set at creation and usually changed anytime afterwards as well. An example is `room.name`, which is a human-readable name of the room that doesn't have to be unique.
 
@@ -7,4 +7,4 @@ The most important room property is `room.id`, which is a globally unique identi
 
 Rooms may also have a human-readable alias, which must be set at room creation. Unlike room names, it is possible to look up a room by it's alias using `client.fetchRoomByAlias`. The alias is chosen by the creator of the room, and has to be globally unique.
 
-For the purpose of this guide, a room has already been created whith the two previously registered users, which will be accessible in later parts of the guide.
+For the purpose of this guide, a room has already been created with the two previously registered users, which will be accessible in later parts of the guide.
