@@ -6,14 +6,11 @@ import * as cct from '@cct/libcct';
 
 const injections = [
     {
-        pattern: /(\b\w+)\.startCall\(.*?\)/g,
-        replacement: 'window.$1Call = $&'
-    },
-    {
         pattern: /\bnew\scct.DeviceSource\(.*?\)/g,
         replacement:
             `(function() {
-                var deviceSource = $&;window.deviceSources.push(deviceSource);
+                var deviceSource = $&;
+                window.deviceSources.push(deviceSource);
                 return deviceSource;
             })()`
     }
@@ -81,9 +78,8 @@ class Playground extends React.Component {
     }
 
     endCall() {
-        const callerClientId = Object.keys(this.state.authenticatedClients).find(key => window[key + 'RoomCall']);
-        window[callerClientId + 'RoomCall'].hangup();
-        window[callerClientId + 'RoomCall'] = null;
+        const calls = window.__C3_SDK_INSTANCES__.client[0].rooms[0].calls;
+        calls[Object.keys(calls)[0]].hangup();
 
         for(const deviceSource of window.deviceSources) {
             deviceSource.stop();
