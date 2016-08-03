@@ -4,28 +4,26 @@ import Chat from './Chat.jsx';
 import LoadingOverlay from './LoadingOverlay.jsx';
 import * as cct from '@cct/libcct';
 
-const injections = {
-    setName: {
-        type: 'promise',
-        code: 'var stateObj = {}; stateObj[caller + "Name"] = response; self.setState(stateObj);'
+const injections = [
+    {
+        pattern: /(\b\w+)\.setName\(.*?\)/g,
+        replacement:
+            `$&.then(function(response) {
+                var stateObj = {};
+                stateObj['$1' + "Name"] = response;
+                self.setState(stateObj);
+                return response;
+            })`
     },
-    startCall: {
-        type: 'function',
-        objName: 'Call'
+    {
+        pattern: /(\b\w+)\.startCall\(.*?\)/g,
+        replacement: 'window.$1Call = $&'
     }
-};
+];
 
 function injectCode(code) {
-    for(const injection in injections) {
-        const pattern = new RegExp(`\(\\b\\w+\)\\.${injection}\\(.*?\\)`, 'g');
-        switch(injections[injection].type) {
-            case 'promise':
-                code = code.replace(pattern, `$&.then(function(response) {var caller = '$1'; ${injections[injection].code} return response;})`);
-                break;
-            case 'function':
-                code = code.replace(pattern, `window.$1${injections[injection].objName} = $&`);
-                break;
-        }
+    for(const injection of injections) {
+        code = code.replace(injection.pattern, injection.replacement);
     }
     return code;
 }
