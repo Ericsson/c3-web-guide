@@ -9,7 +9,7 @@ The following (desktop) browsers are tested and supported:
 
 ## Developing locally
 Download the repo and then run the following in the root directory of the project:
-```
+```bash
 $ npm install
 ```
 After you've downloaded the repo and have run `npm install` the following commands are available:
@@ -19,7 +19,7 @@ After you've downloaded the repo and have run `npm install` the following comman
 
 ### Adding new pages to the guide
 To add a new page to the guide, you have to add it to the `pages.json` file located in the `./src/` folder. Each entry in the JSON file should look like this:
-```
+```json
 [
     ...
     {
