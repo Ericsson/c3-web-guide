@@ -29,11 +29,11 @@ class Home extends React.Component {
                 <div style={style}>
                     <Markdown src='home.md'/>
                     <ul style={listStyle}>
-                        {Object.keys(pages).map((pageId, index) =>
+                        {pages.map((page, index) =>
                             <ListItem key={index}
-                                      href={`#${pageId}`}
-                                      title={pages[pageId].title}
-                                      description={pages[pageId].description}/>
+                                      href={`#${page.pageId}`}
+                                      title={page.title}
+                                      description={page.description}/>
                         )}
                     </ul>
                 </div>

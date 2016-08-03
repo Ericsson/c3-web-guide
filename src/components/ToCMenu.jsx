@@ -28,13 +28,13 @@ class ToCMenu extends React.Component {
                               pageTitle='Home'
                               onClick={this.props.onListItemClicked}
                               isCurrentPage={this.props.currentState === 'home'}/>
-                    {Object.keys(pages).map((pageId, index) =>
+                    {pages.map((page, index) =>
                         <ListItem key={index}
-                                  pageId={pageId}
-                                  pageTitle={pages[pageId].title}
-                                  pageNumber={pages[pageId].pageNumber}
+                                  pageId={page.pageId}
+                                  pageTitle={page.title}
+                                  pageNumber={index + 1}
                                   onClick={this.props.onListItemClicked}
-                                  isCurrentPage={this.props.currentState === 'guide' && this.props.currentPage === pageId}/>
+                                  isCurrentPage={this.props.currentState === 'guide' && this.props.currentPageIndex === index}/>
                     )}
                 </ul>
             </div>
