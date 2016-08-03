@@ -18,6 +18,14 @@ const injections = [
     {
         pattern: /(\b\w+)\.startCall\(.*?\)/g,
         replacement: 'window.$1Call = $&'
+    },
+    {
+        pattern: /\bnew\scct.DeviceSource\(.*?\)/g,
+        replacement:
+            `(function() {
+                var deviceSource = $&;window.deviceSources.push(deviceSource);
+                return deviceSource;
+            })()`
     }
 ];
 
@@ -45,6 +53,8 @@ class Playground extends React.Component {
         this.handleClientAuthenticated = this.handleClientAuthenticated.bind(this);
         this.runCode = this.runCode.bind(this);
         this.endCall = this.endCall.bind(this);
+
+        window.deviceSources = [];
     }
 
     componentWillReceiveProps(props) {
@@ -84,6 +94,11 @@ class Playground extends React.Component {
         const callerClientId = Object.keys(this.state.authenticatedClients).find(key => window[key + 'RoomCall']);
         window[callerClientId + 'RoomCall'].hangup();
         window[callerClientId + 'RoomCall'] = null;
+
+        for(const deviceSource of window.deviceSources) {
+            deviceSource.stop();
+        }
+
         this.setState({ongoingCall: false})
     }
 
