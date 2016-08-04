@@ -4,28 +4,21 @@ import Chat from './Chat.jsx';
 import LoadingOverlay from './LoadingOverlay.jsx';
 import * as cct from '@cct/libcct';
 
-const injections = {
-    setName: {
-        type: 'promise',
-        code: 'var stateObj = {}; stateObj[caller + "Name"] = response; self.setState(stateObj);'
-    },
-    startCall: {
-        type: 'function',
-        objName: 'Call'
+const injections = [
+    {
+        pattern: /\bnew\scct.DeviceSource\(.*?\)/g,
+        replacement:
+            `(function() {
+                var deviceSource = $&;
+                window.deviceSources.push(deviceSource);
+                return deviceSource;
+            })()`
     }
-};
+];
 
 function injectCode(code) {
-    for(const injection in injections) {
-        const pattern = new RegExp(`\(\\b\\w+\)\\.${injection}\\(.*?\\)`, 'g');
-        switch(injections[injection].type) {
-            case 'promise':
-                code = code.replace(pattern, `$&.then(function(response) {var caller = '$1'; ${injections[injection].code} return response;})`);
-                break;
-            case 'function':
-                code = code.replace(pattern, `window.$1${injections[injection].objName} = $&`);
-                break;
-        }
+    for(const injection of injections) {
+        code = code.replace(injection.pattern, injection.replacement);
     }
     return code;
 }
@@ -47,6 +40,8 @@ class Playground extends React.Component {
         this.handleClientAuthenticated = this.handleClientAuthenticated.bind(this);
         this.runCode = this.runCode.bind(this);
         this.endCall = this.endCall.bind(this);
+
+        window.deviceSources = [];
     }
 
     componentWillReceiveProps(props) {
@@ -83,9 +78,13 @@ class Playground extends React.Component {
     }
 
     endCall() {
-        const callerClientId = Object.keys(this.state.authenticatedClients).find(key => window[key + 'RoomCall']);
-        window[callerClientId + 'RoomCall'].hangup();
-        window[callerClientId + 'RoomCall'] = null;
+        const calls = window.__C3_SDK_INSTANCES__.client[0].rooms[0].calls;
+        calls[Object.keys(calls)[0]].hangup();
+
+        for(const deviceSource of window.deviceSources) {
+            deviceSource.stop();
+        }
+
         this.setState({ongoingCall: false})
     }
 
@@ -124,7 +123,6 @@ class Playground extends React.Component {
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client1Id}
-                        userName={this.state[this.props.client1Id + 'Name']}
                         onClientAuthenticated={this.handleClientAuthenticated}
                         onCallStarted={() => {this.setState({ongoingCall: true})}}
                         onEndCall={this.endCall}
@@ -133,7 +131,6 @@ class Playground extends React.Component {
                         style={chatStyle}
                         serverUrl={this.props.serverUrl}
                         clientId={this.props.client2Id}
-                        userName={this.state[this.props.client2Id + 'Name']}
                         onClientAuthenticated={this.handleClientAuthenticated}
                         onCallStarted={() => {this.setState({ongoingCall: true})}}
                         onEndCall={this.endCall}

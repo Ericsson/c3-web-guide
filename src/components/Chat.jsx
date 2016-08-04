@@ -17,6 +17,7 @@ class Chat extends React.Component {
 
         this.state = {
             userId: undefined,
+            userName: undefined,
             messages: []
         };
 
@@ -41,6 +42,9 @@ class Chat extends React.Component {
         cct.Auth.anonymous({serverUrl: this.props.serverUrl})
             .then(window[clientId].auth)
             .then(client => {
+                client.user.on('name', userName => {
+                    this.setState({userName});
+                });
                 this.props.onClientAuthenticated(clientId);
                 this.setState({userId: client.user.id});
             });
@@ -113,7 +117,7 @@ class Chat extends React.Component {
                 <ChatHeader
                     clientId={this.props.clientId}
                     userId={this.state.userId}
-                    userName={this.props.userName}/>
+                    userName={this.state.userName}/>
                 <ChatMessageList
                     userId={this.state.userId}
                     messages={this.state.messages}/>
