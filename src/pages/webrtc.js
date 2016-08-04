@@ -13,15 +13,15 @@
 client1.on('call', function (call) {
     var localMedia = new cct.DeviceSource();
     call.start();
+    call.getRemoteSource('id').connect(client1VideoNode);
     call.setLocalSource('id', localMedia);
-    call.getRemoteSource('id').sink = client1VideoNode;
 });
 
 client2.on('call', function (call) {
     var localMedia = new cct.DeviceSource();
     call.start();
     call.setLocalSource('id', localMedia);
-    call.getRemoteSource('id').sink = client2VideoNode;
+    call.getRemoteSource('id').connect(client2VideoNode);
 });
 
 client1StartCall = function () {
@@ -29,7 +29,7 @@ client1StartCall = function () {
     var localMedia = new cct.DeviceSource();
     call.setLocalSource('id', localMedia);
     var remoteMedia = call.getRemoteSource('id');
-    remoteMedia.sink = client1VideoNode;
+    remoteMedia.connect(client1VideoNode);
 };
 
 client2StartCall = function () {
@@ -37,5 +37,5 @@ client2StartCall = function () {
     var localMedia = new cct.DeviceSource();
     call.setLocalSource('id', localMedia);
     var remoteMedia = call.getRemoteSource('id');
-    remoteMedia.sink = client2VideoNode;
+    remoteMedia.connect(client2VideoNode);
 };
