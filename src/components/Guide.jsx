@@ -50,7 +50,8 @@ class Guide extends React.Component {
                     style={playgroundStyle}
                     code={require(`raw!../${pages[currentPageIndex].code}`)}
                     readOnly={pages[currentPageIndex].readOnly}
-                    serverUrl={this.props.serverUrl}/>
+                    clientIds={this.props.clientIds}
+                    clientsAuthenticated={this.props.clientsAuthenticated}/>
             </div>
         );
     }

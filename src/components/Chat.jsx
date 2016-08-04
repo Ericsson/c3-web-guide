@@ -12,10 +12,11 @@ function pushObserver(arr, callback) {
 };
 
 class Chat extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
+            clientInitialized: false,
             userId: undefined,
             userName: undefined,
             messages: []
@@ -27,27 +28,23 @@ class Chat extends React.Component {
         this.startCall = this.startCall.bind(this);
     }
 
-    componentDidMount() {
-        const clientId = this.props.clientId;
+    componentWillReceiveProps(props) {
+        if(!this.state.clientInitialized && props.clientsAuthenticated) {
+            const client = window[this.props.clientId];
 
-        window[clientId + 'Messages'] = [];
-        window[clientId + 'SendMessage'] = () => {};
-        window[clientId + 'StartCall'] = () => {};
-        window[clientId] = new cct.Client();
-
-        pushObserver(window[clientId + 'Messages'], arr => {
-            this.setState({messages: arr});
-        });
-
-        cct.Auth.anonymous({serverUrl: this.props.serverUrl})
-            .then(window[clientId].auth)
-            .then(client => {
-                client.user.on('name', userName => {
-                    this.setState({userName});
-                });
-                this.props.onClientAuthenticated(clientId);
-                this.setState({userId: client.user.id});
+            pushObserver(window[props.clientId + 'Messages'], arr => {
+                this.setState({messages: arr});
             });
+
+            client.user.on('name', userName => {
+                this.setState({userName});
+            });
+
+            this.setState({
+                clientInitialized: true,
+                userId: client.user.id
+            });
+        }
     }
 
     videoNodeCreated(videoNode) {
@@ -98,6 +95,7 @@ class Chat extends React.Component {
     }
 
     startCall() {
+        // TODO: Need to check if call function is not empty
         window[this.props.clientId + 'StartCall']();
         this.props.onCallStarted();
     }

@@ -29,15 +29,10 @@ class Playground extends React.Component {
 
         this.state = {
             loading: true,
-            authenticatedClients: {},
             code: this.props.code,
             ongoingCall: false
         };
 
-        this.state.authenticatedClients[this.props.client1Id] = false;
-        this.state.authenticatedClients[this.props.client2Id] = false;
-
-        this.handleClientAuthenticated = this.handleClientAuthenticated.bind(this);
         this.runCode = this.runCode.bind(this);
         this.endCall = this.endCall.bind(this);
 
@@ -46,27 +41,6 @@ class Playground extends React.Component {
 
     componentWillReceiveProps(props) {
         this.setState({code: props.code});
-    }
-
-    handleClientAuthenticated(clientId) {
-        const authenticatedClients = this.state.authenticatedClients;
-        authenticatedClients[clientId] = true;
-        this.setState({authenticatedClients});
-
-        if(Object.keys(authenticatedClients).every(key => authenticatedClients[key])) {
-            window[clientId].createRoom().then(room => {
-                window[clientId + 'Room'] = room;
-                const otherClientId = Object.keys(authenticatedClients).find(key => key !== clientId);
-                const otherUserId = window[otherClientId].user.id;
-                room.invite(otherUserId);
-            });
-        } else {
-            window[clientId].on('invite', room => {
-                window[clientId + 'Room'] = room;
-                room.join();
-                this.setState({loading: false});
-            });
-        }
     }
 
     runCode() {
@@ -101,11 +75,11 @@ class Playground extends React.Component {
         };
 
         const chatWrapperStyle = {
-            display: this.props.readOnly ? 'none' : 'block'
+            display: this.props.readOnly ? 'none' : 'flex'
         };
 
         const chatStyle = {
-            width: '50%',
+            width: `${100 / this.props.clientIds.length}%`,
             height: 250
         };
 
@@ -119,32 +93,20 @@ class Playground extends React.Component {
                     onRunCode={this.runCode}
                     readOnly={this.props.readOnly}/>
                 <div style={chatWrapperStyle}>
-                    <Chat
-                        style={chatStyle}
-                        serverUrl={this.props.serverUrl}
-                        clientId={this.props.client1Id}
-                        onClientAuthenticated={this.handleClientAuthenticated}
-                        onCallStarted={() => {this.setState({ongoingCall: true})}}
-                        onEndCall={this.endCall}
-                        ongoingCall={this.state.ongoingCall}/>
-                    <Chat
-                        style={chatStyle}
-                        serverUrl={this.props.serverUrl}
-                        clientId={this.props.client2Id}
-                        onClientAuthenticated={this.handleClientAuthenticated}
-                        onCallStarted={() => {this.setState({ongoingCall: true})}}
-                        onEndCall={this.endCall}
-                        ongoingCall={this.state.ongoingCall}/>
+                    {this.props.clientIds.map((clientId, index) =>
+                        <Chat
+                            style={chatStyle}
+                            clientId={clientId}
+                            onCallStarted={() => {this.setState({ongoingCall: true})}}
+                            onEndCall={this.endCall}
+                            ongoingCall={this.state.ongoingCall}
+                            clientsAuthenticated={this.props.clientsAuthenticated}/>
+                    )}
                 </div>
-                <LoadingOverlay loading={this.state.loading}/>
+                <LoadingOverlay loading={!this.props.clientsAuthenticated}/>
             </div>
         );
     }
-}
-
-Playground.defaultProps = {
-    client1Id: 'client1',
-    client2Id: 'client2'
 }
 
 export default Playground;

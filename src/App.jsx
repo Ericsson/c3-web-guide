@@ -5,8 +5,51 @@ import ToCMenu from './components/ToCMenu.jsx';
 import Home from './components/Home.jsx';
 import Guide from './components/Guide.jsx';
 import pages from './pages.json';
-import {serverUrl, pageTitle} from './constants.js';
+import {serverUrl, pageTitle, clientIds} from './constants.js';
+import * as cct from '@cct/libcct';
 import './base.css';
+
+function initiateClients() {
+    const promises = [];
+
+    clientIds.forEach(() => {
+        const client = new cct.Client();
+        promises.push(
+            cct.Auth.anonymous({serverUrl})
+                .then(client.auth)
+        );
+    });
+
+    return Promise.all(promises).then(clients => {
+        return new Promise((resolve, reject) => {
+            clientIds.forEach((clientId, index) => {
+                window[clientId] = clients[index];
+                window[clientId + 'Messages'] = [];
+                window[clientId + 'SendMessage'] = () => {};
+                window[clientId + 'StartCall'] = () => {};
+
+                if(index === clientIds.length - 1) {
+                    window[clientId].createRoom().then(room => {
+                        window[clientId + 'Room'] = room;
+                        room.on('members', () => {
+                            if(room.members.length === clientIds.length) {
+                                resolve();
+                            }
+                        });
+                        for(let i = 0; i < clientIds.length - 1; i++) {
+                            room.invite(clients[i].user.id);
+                        }
+                    });
+                } else {
+                    window[clientId].once('invite', room => {
+                        window[clientId + 'Room'] = room;
+                        room.join();
+                    });
+                }
+            });
+        });
+    });
+}
 
 class App extends React.Component {
     constructor() {
@@ -15,6 +58,7 @@ class App extends React.Component {
         this.state = {
             currentState: 'home',
             currentPageIndex: 0,
+            clientsAuthenticated: false,
             changingHash: false,
             showToCMenu: false
         };
@@ -25,6 +69,10 @@ class App extends React.Component {
         this.goToNextPage = this.goToNextPage.bind(this);
         this.clickHandler = this.clickHandler.bind(this);
         this.toggleToCMenu = this.toggleToCMenu.bind(this);
+
+        initiateClients().then(() => {
+            this.setState({clientsAuthenticated: true});
+        });
     }
 
     handleRoute() {
@@ -101,11 +149,11 @@ class App extends React.Component {
 
     toggleToCMenu() {
         if(this.state.showToCMenu) {
-            this.homeNode.removeEventListener('click', this.clickHandler);
-            this.guideNode.removeEventListener('click', this.clickHandler);
+            this.homeNode && this.homeNode.removeEventListener('click', this.clickHandler);
+            this.guideNode && this.guideNode.removeEventListener('click', this.clickHandler);
         } else {
-            this.homeNode.addEventListener('click', this.clickHandler);
-            this.guideNode.addEventListener('click', this.clickHandler);
+            this.homeNode && this.homeNode.addEventListener('click', this.clickHandler);
+            this.guideNode && this.guideNode.addEventListener('click', this.clickHandler);
         }
 
         this.setState({showToCMenu: !this.state.showToCMenu});
@@ -120,12 +168,10 @@ class App extends React.Component {
 
         const homeStyle = {
             flex: '1',
-            display: this.state.currentState === 'home' ? 'block' : 'none'
         };
 
         const guideStyle = {
             flex: '1',
-            display: this.state.currentState === 'guide' ? 'flex' : 'none'
         };
 
         const ToCMenuStyle = {
@@ -144,16 +190,25 @@ class App extends React.Component {
                          currentState={this.state.currentState}
                          currentPageIndex={this.state.currentPageIndex}
                          onListItemClicked={this.toggleToCMenu}/>
-                <Home style={homeStyle}
-                      pages={pages}
-                      ref={node => {this.homeNode = ReactDOM.findDOMNode(node)}}/>
-                <Guide style={guideStyle}
-                       pages={pages}
-                       currentPageIndex={this.state.currentPageIndex}
-                       onGoToPrevPage={this.goToPrevPage}
-                       onGoToNextPage={this.goToNextPage}
-                       serverUrl={serverUrl}
-                       ref={node => {this.guideNode = ReactDOM.findDOMNode(node)}}/>
+                {(() => {
+                    switch(this.state.currentState) {
+                        case 'guide':
+                            return <Guide style={guideStyle}
+                                       pages={pages}
+                                       currentPageIndex={this.state.currentPageIndex}
+                                       onGoToPrevPage={this.goToPrevPage}
+                                       onGoToNextPage={this.goToNextPage}
+                                       clientIds={clientIds}
+                                       clientsAuthenticated={this.state.clientsAuthenticated}
+                                       ref={node => {this.guideNode = ReactDOM.findDOMNode(node)}}/>
+                        case 'home':
+                        default:
+                            return <Home style={homeStyle}
+                                       pages={pages}
+                                       ref={node => {this.homeNode = ReactDOM.findDOMNode(node)}}/>
+
+                    }
+                })()}
             </div>
         );
     }
