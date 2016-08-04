@@ -40,7 +40,9 @@ class Playground extends React.Component {
     }
 
     componentWillReceiveProps(props) {
-        this.setState({code: props.code});
+        if(this.props.code !== props.code) {
+            this.setState({code: props.code});
+        }
     }
 
     runCode() {
@@ -63,6 +65,8 @@ class Playground extends React.Component {
     }
 
     render() {
+        const clients = this.props.clients;
+
         const wrapperStyle = {
             display: 'flex',
             flexDirection: 'column',
@@ -75,11 +79,11 @@ class Playground extends React.Component {
         };
 
         const chatWrapperStyle = {
-            display: this.props.readOnly ? 'none' : 'flex'
+            display: this.props.readOnly ? 'none' : 'block'
         };
 
         const chatStyle = {
-            width: `${100 / this.props.clientIds.length}%`,
+            width: `${100 / Object.keys(clients).length}%`,
             height: 250
         };
 
@@ -93,17 +97,19 @@ class Playground extends React.Component {
                     onRunCode={this.runCode}
                     readOnly={this.props.readOnly}/>
                 <div style={chatWrapperStyle}>
-                    {this.props.clientIds.map((clientId, index) =>
+                    {Object.keys(clients).map((clientId, index) =>
                         <Chat
                             style={chatStyle}
                             clientId={clientId}
+                            userId={clients[clientId].userId}
+                            userName={clients[clientId].userName}
+                            messages={clients[clientId].messages}
                             onCallStarted={() => {this.setState({ongoingCall: true})}}
                             onEndCall={this.endCall}
-                            ongoingCall={this.state.ongoingCall}
-                            clientsAuthenticated={this.props.clientsAuthenticated}/>
+                            ongoingCall={this.state.ongoingCall}/>
                     )}
                 </div>
-                <LoadingOverlay loading={!this.props.clientsAuthenticated}/>
+                <LoadingOverlay loading={!this.props.clientsInitialized}/>
             </div>
         );
     }

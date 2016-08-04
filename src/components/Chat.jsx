@@ -5,47 +5,14 @@ import VideoWindow from './VideoWindow.jsx';
 import {defaultBorder, defaultTextColor, lightGreyColor} from '../constants.js';
 import * as cct from '@cct/libcct';
 
-function pushObserver(arr, callback) {
-    arr.push = function(e) {
-        Array.prototype.push.call(arr, e);
-        callback(arr);
-    };
-};
-
 class Chat extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            clientInitialized: false,
-            userId: undefined,
-            userName: undefined,
-            messages: []
-        };
+    constructor() {
+        super();
 
         this.videoNodeCreated = this.videoNodeCreated.bind(this);
         this.startMoveVideoWindow = this.startMoveVideoWindow.bind(this);
         this.moveVideoWindow = this.moveVideoWindow.bind(this);
         this.startCall = this.startCall.bind(this);
-    }
-
-    componentWillReceiveProps(props) {
-        if(!this.state.clientInitialized && props.clientsAuthenticated) {
-            const client = window[this.props.clientId];
-
-            pushObserver(window[props.clientId + 'Messages'], arr => {
-                this.setState({messages: arr});
-            });
-
-            client.user.on('name', userName => {
-                this.setState({userName});
-            });
-
-            this.setState({
-                clientInitialized: true,
-                userId: client.user.id
-            });
-        }
     }
 
     videoNodeCreated(videoNode) {
@@ -115,11 +82,11 @@ class Chat extends React.Component {
             <div ref={c => {this.videoArea = c}} style={chatStyle}>
                 <ChatHeader
                     clientId={this.props.clientId}
-                    userId={this.state.userId}
-                    userName={this.state.userName}/>
+                    userId={this.props.userId}
+                    userName={this.props.userName}/>
                 <ChatMessageList
-                    userId={this.state.userId}
-                    messages={this.state.messages}/>
+                    userId={this.props.userId}
+                    messages={this.props.messages}/>
                 <ChatInput
                     onSendMessage={window[this.props.clientId + 'SendMessage']}
                     onStartCall={this.startCall}

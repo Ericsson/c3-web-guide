@@ -9,47 +9,12 @@ import {serverUrl, pageTitle, clientIds} from './constants.js';
 import * as cct from '@cct/libcct';
 import './base.css';
 
-function initiateClients() {
-    const promises = [];
-
-    clientIds.forEach(() => {
-        const client = new cct.Client();
-        promises.push(
-            cct.Auth.anonymous({serverUrl})
-                .then(client.auth)
-        );
-    });
-
-    return Promise.all(promises).then(clients => {
-        return new Promise((resolve, reject) => {
-            clientIds.forEach((clientId, index) => {
-                window[clientId] = clients[index];
-                window[clientId + 'Messages'] = [];
-                window[clientId + 'SendMessage'] = () => {};
-                window[clientId + 'StartCall'] = () => {};
-
-                if(index === clientIds.length - 1) {
-                    window[clientId].createRoom().then(room => {
-                        window[clientId + 'Room'] = room;
-                        room.on('members', () => {
-                            if(room.members.length === clientIds.length) {
-                                resolve();
-                            }
-                        });
-                        for(let i = 0; i < clientIds.length - 1; i++) {
-                            room.invite(clients[i].user.id);
-                        }
-                    });
-                } else {
-                    window[clientId].once('invite', room => {
-                        window[clientId + 'Room'] = room;
-                        room.join();
-                    });
-                }
-            });
-        });
-    });
-}
+function pushObserver(arr, callback) {
+    arr.push = function(e) {
+        Array.prototype.push.call(arr, e);
+        callback(arr);
+    };
+};
 
 class App extends React.Component {
     constructor() {
@@ -58,11 +23,14 @@ class App extends React.Component {
         this.state = {
             currentState: 'home',
             currentPageIndex: 0,
-            clientsAuthenticated: false,
+            clientsInitialized: false,
             changingHash: false,
+            clients: {},
             showToCMenu: false
         };
 
+        this.updateClientData = this.updateClientData.bind(this);
+        this.initializeClients = this.initializeClients.bind(this);
         this.handleRoute = this.handleRoute.bind(this);
         this.setCurrentPageIndex = this.setCurrentPageIndex.bind(this);
         this.goToPrevPage = this.goToPrevPage.bind(this);
@@ -70,8 +38,70 @@ class App extends React.Component {
         this.clickHandler = this.clickHandler.bind(this);
         this.toggleToCMenu = this.toggleToCMenu.bind(this);
 
-        initiateClients().then(() => {
-            this.setState({clientsAuthenticated: true});
+        this.initializeClients();
+    }
+
+    updateClientData(clientId, data) {
+        const clients = this.state.clients;
+        Object.assign(clients[clientId], data);
+        this.setState({clients});
+    }
+
+    initializeClients() {
+        const promises = [];
+
+        clientIds.forEach(() => {
+            const client = new cct.Client();
+            promises.push(
+                cct.Auth.anonymous({serverUrl})
+                    .then(client.auth)
+            );
+        });
+
+        Promise.all(promises).then(clients => {
+            clientIds.forEach((clientId, index) => {
+                const client = clients[index];
+
+                const newClients = this.state.clients;
+                newClients[clientId] = {
+                    messages: [],
+                    userId: client.user.id,
+                    userName: undefined
+                };
+                this.setState({clients: newClients});
+
+                window[clientId] = client;
+                window[clientId + 'Messages'] = [];
+                window[clientId + 'SendMessage'] = () => {};
+                window[clientId + 'StartCall'] = () => {};
+
+                client.user.on('name', userName => {
+                    this.updateClientData(clientId, {userName});
+                });
+
+                pushObserver(window[clientId + 'Messages'], messages => {
+                    this.updateClientData(clientId, {messages});
+                });
+
+                if(index === clientIds.length - 1) {
+                    client.createRoom().then(room => {
+                        window[clientId + 'Room'] = room;
+                        room.on('members', () => {
+                            if(room.members.length === clientIds.length) {
+                                this.setState({clientsInitialized: true});
+                            }
+                        });
+                        for(let i = 0; i < clientIds.length - 1; i++) {
+                            room.invite(clients[i].user.id);
+                        }
+                    });
+                } else {
+                    client.once('invite', room => {
+                        window[clientId + 'Room'] = room;
+                        room.join();
+                    });
+                }
+            });
         });
     }
 
@@ -198,8 +228,8 @@ class App extends React.Component {
                                        currentPageIndex={this.state.currentPageIndex}
                                        onGoToPrevPage={this.goToPrevPage}
                                        onGoToNextPage={this.goToNextPage}
-                                       clientIds={clientIds}
-                                       clientsAuthenticated={this.state.clientsAuthenticated}
+                                       clients={this.state.clients}
+                                       clientsInitialized={this.state.clientsInitialized}
                                        ref={node => {this.guideNode = ReactDOM.findDOMNode(node)}}/>
                         case 'home':
                         default:
