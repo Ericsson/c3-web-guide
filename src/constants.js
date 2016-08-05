@@ -4,3 +4,4 @@ export const defaultTextColor = '#444';
 export const defaultBorderColor = '#e1e1e1';
 export const defaultBorder = `1px solid ${defaultBorderColor}`;
 export const lightGreyColor = '#f8f8f8';
+export const clientIds = ['client1', 'client2'];
