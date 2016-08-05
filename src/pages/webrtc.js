@@ -25,7 +25,7 @@ client2.on('call', function (call) {
 });
 
 client1StartCall = function () {
-    var call = client1Room.startCall(client1Room.otherMembers[0]);
+    var call = client1Room.startCall(client2.user);
     var localMedia = new cct.DeviceSource();
     call.setLocalSource('id', localMedia);
     var remoteMedia = call.getRemoteSource('id');
@@ -33,7 +33,7 @@ client1StartCall = function () {
 };
 
 client2StartCall = function () {
-    var call = client2Room.startCall(client2Room.otherMembers[0]);
+    var call = client2Room.startCall(client1.user);
     var localMedia = new cct.DeviceSource();
     call.setLocalSource('id', localMedia);
     var remoteMedia = call.getRemoteSource('id');

@@ -95,7 +95,7 @@ class Chat extends React.Component {
                     onVideoWindowCreated={videoWindow => {this.videoWindow = videoWindow}}
                     onVideoNodeCreated={this.videoNodeCreated}
                     onStartMoveVideoWindow={this.startMoveVideoWindow}
-                    onEndCallButtonClicked={this.props.onEndCall}
+                    onEndCallButtonClicked={() => {this.props.onEndCall(this.props.clientId)}}
                     ongoingCall={this.props.ongoingCall}/>
             </div>
         );
