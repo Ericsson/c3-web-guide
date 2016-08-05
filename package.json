@@ -36,7 +36,7 @@
     "webpack-dev-server": "1.14.1"
   },
   "dependencies": {
-    "@cct/libcct": "0.15.0-rc8",
+    "@cct/libcct": "0.15.0-rc10",
     "github-markdown-css": "2.3.0",
     "react": "15.1.0",
     "react-codemirror": "0.2.6",

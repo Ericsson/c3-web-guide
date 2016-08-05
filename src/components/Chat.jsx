@@ -63,9 +63,10 @@ class Chat extends React.Component {
     }
 
     startCall() {
-        // TODO: Need to check if call function is not empty
         window[this.props.clientId + 'StartCall']();
-        this.props.onCallStarted();
+        if(Object.keys(window[this.props.clientId + 'Room'].calls).length > 0) {
+            this.props.onCallStarted();
+        }
     }
 
     render() {
@@ -95,7 +96,7 @@ class Chat extends React.Component {
                     onVideoWindowCreated={videoWindow => {this.videoWindow = videoWindow}}
                     onVideoNodeCreated={this.videoNodeCreated}
                     onStartMoveVideoWindow={this.startMoveVideoWindow}
-                    onEndCallButtonClicked={this.props.onEndCall}
+                    onEndCallButtonClicked={() => {this.props.onEndCall(this.props.clientId)}}
                     ongoingCall={this.props.ongoingCall}/>
             </div>
         );

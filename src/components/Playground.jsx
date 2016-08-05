@@ -53,9 +53,11 @@ class Playground extends React.Component {
         this.forceUpdate();
     }
 
-    endCall() {
-        const calls = window.__C3_SDK_INSTANCES__.client[0].rooms[0].calls;
-        calls[Object.keys(calls)[0]].hangup();
+    endCall(clientId) {
+        const calls = window[clientId + 'Room'].calls;
+        for(const callId in calls) {
+            calls[callId].hangup();
+        }
 
         for(const deviceSource of window.deviceSources) {
             deviceSource.stop();
