@@ -63,9 +63,10 @@ class Chat extends React.Component {
     }
 
     startCall() {
-        // TODO: Need to check if call function is not empty
         window[this.props.clientId + 'StartCall']();
-        this.props.onCallStarted();
+        if(Object.keys(window[this.props.clientId + 'Room'].calls).length > 0) {
+            this.props.onCallStarted();
+        }
     }
 
     render() {
