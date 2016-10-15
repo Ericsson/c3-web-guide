@@ -1,4 +1,4 @@
-export const serverUrl = 'https://demo.cct.ericsson.net';
+export const serverUrl = 'https://demo.c3.ericsson.net';
 export const pageTitle = 'C3 Web Guide';
 export const defaultTextColor = '#444';
 export const defaultBorderColor = '#e1e1e1';
